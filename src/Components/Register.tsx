@@ -1,4 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
+// useEffect
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../AuthContext';
 // import Logo from "./Images/Logo.svg";
@@ -8,17 +9,17 @@ export default function RegistrationForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isPopupVisible, setIsPopupVisible] = useState(false);
-  const [referralAddress, setReferralAddress] = useState('');
+  // const [referralAddress, setReferralAddress] = useState('');
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const queryParams = new URLSearchParams(window.location.search);
-    const referral = queryParams.get('referral');
+  // useEffect(() => {
+  //   const queryParams = new URLSearchParams(window.location.search);
+  //   const referral = queryParams.get('referral');
 
-    if (referral) {
-      setReferralAddress(referral);
-    }
-  }, []);
+  //   if (referral) {
+  //     setReferralAddress(referral);
+  //   }
+  // }, []);
 
  const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
