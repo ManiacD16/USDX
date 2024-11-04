@@ -1,4 +1,7 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
+// import { useEffect, useContext } from "react";
+// import { useNavigate } from "react-router-dom";
+import { UserContext } from "../App";
 // import SimpleBar from "simplebar-react";
 // import "simplebar-react/dist/simplebar.min.css"; // Import SimpleBar styles
 import {
@@ -10,7 +13,7 @@ import {
   X,
 } from "lucide-react"; // Using Lucide icons
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from '../AuthContext'; // Import AuthContext
+// import { AuthContext } from '../AuthContext'; // Import AuthContext
 // import Avatar1 from "./Images/Logo1.png";
 // import Avatar2 from "./Images/Avatar.jpg";
 // import Avatar3 from "./Images/Avatar1.jpg";
@@ -18,7 +21,7 @@ import { AuthContext } from '../AuthContext'; // Import AuthContext
 // const avatars = [Avatar1, Avatar2, Avatar3, Avatar4];
 
 const Sidebar = ({ setIsSidebarOpen }: { setIsSidebarOpen: (isOpen: boolean) => void }) => {
-    const { logout } = useContext(AuthContext)!; 
+    // const { logout } = useContext(AuthContext)!; 
   const [isTeamDropdownOpen, setTeamDropdownOpen] = useState(false);
   const [isStakeDropdownOpen, setStakeDropdownOpen] = useState(false);
   const [isIncomeDropdownOpen, setIncomeDropdownOpen] = useState(false);
@@ -28,17 +31,33 @@ const Sidebar = ({ setIsSidebarOpen }: { setIsSidebarOpen: (isOpen: boolean) => 
     //  const [isLoggingOut, setIsLoggingOut] = useState(false);
 //   const [selectedAvatar, setSelectedAvatar] = useState(avatars[0]);
     //   const [isOpen, setIsOpen] = useState(false);
-const handleLogout = async () => {
-  setError('');
-  try {
-    const success = await logout(); // Call the modified logout function
-    if (success) {
-      navigate('/login'); // Only redirect if logout was successful
-    }
-  } catch (err) {
-    setError('Logout failed. Please try again later.');
-  }
-};
+
+  const { dispatch } = useContext(UserContext);
+
+    const handleLogout = async () => {
+      try {
+        const res = await fetch("/api/auth/logout", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        });
+
+        if (res.status === 401) {
+          alert("Session expired. Please log in again.");
+          navigate("/login");
+        } else {
+          dispatch({ type: "USER", payload: false });
+          navigate("/login", { replace: true });
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    handleLogout();
 
 
   const toggleTeamDropdown = () => {

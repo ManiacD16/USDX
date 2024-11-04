@@ -1,13 +1,15 @@
 import { useState, useContext } from 'react';
+import { NavLink, useNavigate } from "react-router-dom";
+
 // useEffect
-import { useNavigate } from 'react-router-dom';
-import { AuthContext } from '../AuthContext';
+// import { useNavigate } from 'react-router-dom';
+// import { AuthContext } from '../AuthContext';
 // import Logo from "./Images/Logo.svg";
 
 export default function RegistrationForm() {
-  const { register } = useContext(AuthContext)!;
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // const { register } = useContext(AuthContext)!;
+  // const [email, setEmail] = useState('');
+  // const [password, setPassword] = useState('');
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   // const [referralAddress, setReferralAddress] = useState('');
   const navigate = useNavigate();
@@ -20,20 +22,39 @@ export default function RegistrationForm() {
   //     setReferralAddress(referral);
   //   }
   // }, []);
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
 
- const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
+  const handleInputs = (e: { target: { name: any; value: any; }; }) => {
+    const { name, value } = e.target;
+    setUser({ ...user, [name]: value });
+  };
 
-  try {
-    await register(email, password);
-    alert('Registration successful!');
-    navigate('/user'); // Redirect only on success
-  } catch (error: any) {
-    console.error('Error during registration:', error);
-    alert(error.message); // Show the error message from the thrown error
-    // No navigation, user remains on the registration page
-  }
-};
+  const PostData = async (e: { preventDefault: () => void; }) => {
+    e.preventDefault();
+
+    const { email, password } = user;
+
+    const res = await fetch("http://localhost:3000/api/auth/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    const data = await res.json();
+
+    if (data.error) {
+      window.alert(data.error);
+    } else {
+      window.alert("Registration Successful");
+      navigate("/login");
+    }
+  };
+
 
 
   const handleConnectWallet = async () => {
@@ -58,18 +79,19 @@ export default function RegistrationForm() {
         <h2 className="text-3xl font-bold text-white mb-2">Create Your Account Now</h2>
         <p className="text-gray-400 mb-8">With Your Desired Wallet</p>
 
-        <form onSubmit={handleRegister}>
+        <form onSubmit={PostData}>
           <div className="mb-6">
             <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-2">
               Email<span className="text-red-500">*</span>
             </label>
             <input
-              type="email"
-              id="email"
+               type="email"
+            name="email"
+            id="email"
               className="w-full bg-gray-700 text-white rounded px-4 py-3 outline-none focus:ring-2 focus:ring-teal-500"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
+              value={user.email}
+            onChange={handleInputs}
+            required
               placeholder="Enter your email"
             />
           </div>
@@ -80,11 +102,12 @@ export default function RegistrationForm() {
             </label>
             <input
               type="password"
-              id="password"
+            name="password"
+            id="password"
+            value={user.password}
+            onChange={handleInputs}
+            required
               className="w-full bg-gray-700 text-white rounded px-4 py-3 outline-none focus:ring-2 focus:ring-teal-500"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
               placeholder="Enter your password"
             />
           </div>

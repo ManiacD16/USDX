@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 interface User {
   id: string;
@@ -21,44 +21,64 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-const login = async (email: string, password: string) => {
-    try {
-        const response = await axios.post(
-            'http://localhost:3000/api/auth/login',
-            { email, password },
-            { withCredentials: true } // Include credentials
-        );
-        localStorage.setItem('token', response.data.token);
-        setUser(response.data.user);
-        setIsAuthenticated(true);
-        alert('Login Successful.');
-        return true; // Indicate success
-    } catch (error) {
-        console.error('Login failed:', error);
-        alert('Login failed. Please check your credentials.');
-        return false; // Indicate failure
+  const login = async (email: string, password: string): Promise<boolean> => {
+  // Check if the user is already authenticated
+  if (isAuthenticated) {
+    alert('You are already logged in.');
+    return false; // Return false to indicate no login action was taken
+  }
+
+  try {
+    const response: AxiosResponse<{ token: string; user: User }> = await axios.post(
+      'http://localhost:3000/api/auth/login',
+      { email, password },
+      { withCredentials: true }
+    );
+
+    // Assuming the response contains user info and a token upon successful login
+    if (response.status === 200) {
+      localStorage.setItem('token', response.data.token);
+      setUser(response.data.user);
+      setIsAuthenticated(true); // Update authentication state
+      alert('Login Successful.');
+      return true; // Indicate success
+    } else {
+      // If the response is not successful, alert the user
+      alert('Login failed. Please check your credentials.');
+      return false;
     }
+  } catch (error: any) {
+    console.error('Login failed:', error.response ? error.response.data : error);
+    alert('Login failed. Please check your credentials.');
+    return false; // Indicate failure
+  }
 };
 
-
- const logout = async (): Promise<boolean> => {
+const logout = async (): Promise<boolean> => {
   try {
-    const response = await axios.post(
+    const response: AxiosResponse<{ message?: string }> = await axios.post(
       'http://localhost:3000/api/auth/logout',
       {},
       { withCredentials: true } // Include credentials
     );
-    localStorage.removeItem('token');
-    setUser(null);
-    setIsAuthenticated(false);
-    alert(response.data.message);
-    return true;
-  } catch (error) {
-    console.error('Error during logout:', error);
-    alert('Logout failed. Please try again later.');
+
+    // Check for successful response status
+    if (response.status === 200) {
+      localStorage.removeItem('token');
+      setUser(null);
+      setIsAuthenticated(false);
+      alert(response.data.message || 'Logged out successfully'); // Handle server message
+      return true;
+    } else {
+      throw new Error('Unexpected logout response');
+    }
+  } catch (error: any) {
+    console.error('Error during logout:', error.response?.data || error); // Log specific error
+    alert(error.response?.data?.message || 'Logout failed. Please try again later.');
     return false;
   }
 };
+
 
  const register = async (email: string, password: string) => {
   try {
