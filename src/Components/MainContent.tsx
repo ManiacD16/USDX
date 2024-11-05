@@ -7,7 +7,7 @@ import "../App.css";
 
 const EcommerceReferralPage = () => {
   const { isAuthenticated, token: userToken } = useAuth(); // Access token and isAuthenticated from AuthContext
-
+  const [totalInvestment, setTotalInvestment] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [dailyROI, setDailyROI] = useState<number | null>(null);
   const [withdrawAmount, setWithdrawAmount] = useState("");
@@ -23,32 +23,76 @@ const EcommerceReferralPage = () => {
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalDeposit, setTotalDeposit] = useState(0);
   const [levelIncome, setLevelIncome] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch total income, total deposit, and level income
-  useEffect(() => {
+ useEffect(() => {
     const calculateLevelROI = async () => {
-       if (!isAuthenticated) return;
+      if (!isAuthenticated) return;
+
       try {
+        // Data to send to the backend
+        const requestData = {
+          level: 2, // Replace with dynamic level data as needed
+          directReferrals: 4, // Replace with dynamic referral data as needed
+          amount: 1000, // Replace with the amount to calculate ROI for
+        };
+
         const response = await fetch('http://localhost:3000/api/investments/calculate-level-roi', {
-          method: 'GET',
+          method: 'POST', // Changed from GET to POST
           headers: {
             'Authorization': `Bearer ${userToken}`,
             'Content-Type': 'application/json',
-          }
+          },
+          body: JSON.stringify(requestData), // Sending data in body
         });
 
         if (!response.ok) throw new Error('Failed to fetch data');
 
         const data = await response.json();
-        setTotalIncome(data.totalIncome);
-        setTotalDeposit(data.totalDeposit);
-        setLevelIncome(data.levelIncome);
-      } catch (error) {
+
+        // Assuming the backend returns { message, roi }
+        if (data.roi !== undefined) {
+          setLevelIncome(data.roi);  // Set ROI calculated based on the request
+        }
+
+        console.log(data.message);  // Optionally log the message for debugging
+
+      } catch (error: any) {
         console.error("Error fetching income data:", error);
+        setError("Error fetching ROI data");
       }
     };
+
     calculateLevelROI();
   }, [isAuthenticated, userToken]); // Dependency array to refetch data when token changes
+
+
+  useEffect(() => {
+    // Function to fetch the total investment from the backend
+    const fetchTotalInvestment = async () => {
+      try {
+        const response = await fetch('http://localhost:3000/api/investments/total-investment', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('token')}`, // or use cookie/token
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch total investment');
+        }
+
+        const data = await response.json();
+        setTotalInvestment(data.totalInvestment);  // Set the total investment value
+      } catch (err: any) {
+        setError(err.message); // Handle any errors
+      }
+    };
+
+    fetchTotalInvestment();  // Call the function when the component mounts
+  }, []); // Empty dependency array ensures this runs only once when component mounts
 
   // Fetch daily ROI
   const fetchDailyROI = async () => {
@@ -110,27 +154,32 @@ useEffect(() => {
 
   // Handle Investment action
   const invest = async () => {
-    if (!isAuthenticated) return;
-    try {
-      const response = await fetch('http://localhost:3000/api/investments/invest', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${userToken}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ amount: investAmount }),
-      });
+  if (!isAuthenticated) return;
+  try {
+    const response = await fetch('http://localhost:3000/api/investments/invest', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${userToken}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ amount: investAmount }),
+    });
 
-      if (!response.ok) throw new Error('Failed to invest');
+    if (!response.ok) throw new Error('Failed to invest');
 
-      const data = await response.json();
-      alert(`Investment successful! New balance: $${data.balance}`);
-      setInvestAmount(""); // Reset invest amount input
-    } catch (error) {
-      console.error("Error during investment:", error);
+    const data = await response.json();
+    if (data.newBalance !== undefined) {
+      alert(`Investment successful! New balance: $${data.newBalance}`);
+      // Update the frontend balance state with the new balance
+      setTotalIncome(data.newBalance); // Assuming 'totalIncome' is used for the balance
+    } else {
+      alert('Investment successful, but no new balance returned.');
     }
-  };
-
+  } catch (error: any) {
+    console.error('Invest error:', error);
+    setError('Failed to invest');
+  }
+};
   // Copy invite link to clipboard
   const copyToClipboard = () => {
     navigator.clipboard
@@ -198,7 +247,7 @@ useEffect(() => {
           <div className="p-6 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
             <div>
               <h2 className="text-lg md:text-2xl font-semibold">Total Deposit</h2>
-              <p className="md:text-lg text-2xl font-bold text-green-600">${totalDeposit}</p>
+              <p className="md:text-lg text-2xl font-bold text-green-600">${totalInvestment}</p>
             </div>
             <Vault className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
           </div>
