@@ -1,12 +1,13 @@
-import { useState, useContext } from 'react';
-import { NavLink, useNavigate } from "react-router-dom";
-
+import { useState } from 'react';
+import {  useNavigate } from "react-router-dom";
+import { useAuth } from "../AuthContext";
 // useEffect
 // import { useNavigate } from 'react-router-dom';
 // import { AuthContext } from '../AuthContext';
 // import Logo from "./Images/Logo.svg";
 
 export default function RegistrationForm() {
+    const {StoreTokenInLS} = useAuth();
   // const { register } = useContext(AuthContext)!;
   // const [email, setEmail] = useState('');
   // const [password, setPassword] = useState('');
@@ -46,11 +47,13 @@ export default function RegistrationForm() {
     });
 
     const data = await res.json();
+    console.log('Response from server', data)
 
     if (data.error) {
       window.alert(data.error);
     } else {
       window.alert("Registration Successful");
+      StoreTokenInLS(data.token);
       navigate("/login");
     }
   };

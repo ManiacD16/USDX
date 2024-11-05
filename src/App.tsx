@@ -1,5 +1,5 @@
 import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import { useReducer, createContext, useEffect } from "react";
+import { useReducer, createContext } from "react";
 // import { AuthProvider } from './AuthContext'; // Import the AuthProvider
 import MainContent from "./Components/MainContent"; 
 import Team from "./Components/Team"; 

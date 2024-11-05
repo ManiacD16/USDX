@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 // import { useEffect, useContext } from "react";
 // import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react"; // Using Lucide icons
 import { useNavigate } from "react-router-dom";
-// import { AuthContext } from '../AuthContext'; // Import AuthContext
+import { useAuth } from '../AuthContext'; // Import AuthContext
 // import Avatar1 from "./Images/Logo1.png";
 // import Avatar2 from "./Images/Avatar.jpg";
 // import Avatar3 from "./Images/Avatar1.jpg";
@@ -21,44 +21,49 @@ import { useNavigate } from "react-router-dom";
 // const avatars = [Avatar1, Avatar2, Avatar3, Avatar4];
 
 const Sidebar = ({ setIsSidebarOpen }: { setIsSidebarOpen: (isOpen: boolean) => void }) => {
-    // const { logout } = useContext(AuthContext)!; 
+    const { RemoveTokenFromLS } =useAuth(); 
   const [isTeamDropdownOpen, setTeamDropdownOpen] = useState(false);
   const [isStakeDropdownOpen, setStakeDropdownOpen] = useState(false);
   const [isIncomeDropdownOpen, setIncomeDropdownOpen] = useState(false);
-    const [isRewardsDropdownOpen, setRewardsDropdownOpen] = useState(false);
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+  const [isRewardsDropdownOpen, setRewardsDropdownOpen] = useState(false);
+  const [error] = useState('');
+  const navigate = useNavigate();
+  // const [token, setToken] = useState(localStorage.getItem("token"));
     //  const [isLoggingOut, setIsLoggingOut] = useState(false);
 //   const [selectedAvatar, setSelectedAvatar] = useState(avatars[0]);
     //   const [isOpen, setIsOpen] = useState(false);
 
   const { dispatch } = useContext(UserContext);
 
-    const handleLogout = async () => {
-      try {
-        const res = await fetch("/api/auth/logout", {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-        });
+const handleLogout = async () => {
+  try {
+    const res = await fetch("http://localhost:3000/api/auth/logout", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // Ensure cookies are included
+    });
 
-        if (res.status === 401) {
-          alert("Session expired. Please log in again.");
-          navigate("/login");
-        } else {
-          dispatch({ type: "USER", payload: false });
-          navigate("/login", { replace: true });
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
+    if (res.ok) {
+      // Clear the token from localStorage using the auth context
+      RemoveTokenFromLS();
 
-    handleLogout();
+      // Update the user state to logged out
+      dispatch({ type: "USER", payload: false });
 
+      // Navigate to the login page
+      navigate("/login", { replace: true });
+    } else {
+      const errorData = await res.json();
+      alert(errorData.message || "Logout failed. Please try again.");
+    }
+  } catch (err) {
+    console.log("Logout error:", err);
+    alert("An error occurred while logging out. Please try again.");
+  }
+};
 
   const toggleTeamDropdown = () => {
     setTeamDropdownOpen(!isTeamDropdownOpen);
