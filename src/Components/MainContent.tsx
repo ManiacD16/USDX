@@ -29,32 +29,43 @@ const EcommerceReferralPage = () => {
   // const [totalDeposit, setTotalDeposit] = useState(0);
   const [levelIncome, setLevelIncome] = useState(0);
   const [error, setError] = useState<string | null>(null);
+   const [roiData, setRoiData] = useState(null);
+  const [totalROI, setTotalROI] = useState(0);  // State to store total ROI
 
   // Fetch total income, total deposit, and level income
- useEffect(() => {
+useEffect(() => {
     const calculateROI = async () => {
-  try {
-    const response = await fetch('http://localhost:3000/api/investments/calculate-level-roi', {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${userToken}`, // Include user token for authentication
+      try {
+        const response = await fetch('http://localhost:3000/api/investments/calculate-level-roi', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${userToken}`, // Include user token for authentication
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setRoiData(data);  // Set the ROI data from the response
+          
+          // Calculate the total ROI (you can modify this logic as needed)
+          const total = data.roi + data.referralInvestments.reduce((acc: any, referral: { roi: any; }) => acc + referral.roi, 0);
+          setTotalROI(total);  // Set the total ROI including user and referral investments
+        } else {
+          setError(data.error);  // Handle errors from backend
+        }
+      } catch (error: any) {
+        setError('Network error: ' + error.message);  // Handle network errors
+      } finally {
+        setLoading(false);  // Stop loading when the data is fetched or an error occurs
       }
-    });
+    };
 
-    const data = await response.json();
-
-    if (response.ok) {
-      console.log('ROI calculated successfully:', data);
-    } else {
-      console.error('Error calculating ROI:', data.error);
+    if (isAuthenticated && userToken) {
+      calculateROI();
     }
-  } catch (error) {
-    console.error('Network error:', error);
-  }
-};
+  }, [isAuthenticated, userToken]); // Re-fetch if token or auth status changes
 
-  calculateROI();
-  }, [isAuthenticated, userToken]); // Dependency array to refetch data when token changes
 
 
  // Fetch the investment total from localStorage when the component mounts
@@ -244,7 +255,7 @@ const invest = async () => {
           <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
             <div>
               <h2 className="text-lg md:text-2xl font-semibold">Level Income</h2>
-              <p className="md:text-lg text-2xl font-bold text-green-600">${levelIncome}</p>
+              <p className="md:text-lg text-2xl font-bold text-green-600">${totalROI}</p>
             </div>
             <GitBranchPlus className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
           </div>
