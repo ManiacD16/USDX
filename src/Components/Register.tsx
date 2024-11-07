@@ -1,65 +1,55 @@
 import { useState } from 'react';
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../AuthContext";
-// useEffect
-// import { useNavigate } from 'react-router-dom';
-// import { AuthContext } from '../AuthContext';
-// import Logo from "./Images/Logo.svg";
 
 export default function RegistrationForm() {
-    const {StoreTokenInLS} = useAuth();
-  // const { register } = useContext(AuthContext)!;
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
-  // const [referralAddress, setReferralAddress] = useState('');
+  const { StoreTokenInLS } = useAuth();
   const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   const queryParams = new URLSearchParams(window.location.search);
-  //   const referral = queryParams.get('referral');
-
-  //   if (referral) {
-  //     setReferralAddress(referral);
-  //   }
-  // }, []);
+  
+  // State to manage form fields
   const [user, setUser] = useState({
     email: "",
     password: "",
+    referralEmail: "",  // Add referralEmail field
   });
 
+  const [isPopupVisible, setIsPopupVisible] = useState(false);
+
+  // Handle input changes
   const handleInputs = (e: { target: { name: any; value: any; }; }) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
 
+  // Handle form submission
   const PostData = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
-    const { email, password } = user;
+    const { email, password, referralEmail } = user;
 
+    // Send the POST request to the backend
     const res = await fetch("http://localhost:3000/api/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, referralEmail }),  // Include referralEmail
     });
 
     const data = await res.json();
-    console.log('Response from server', data)
+    console.log('Response from server:', data);
 
+    // Check for errors and show a message
     if (data.error) {
       window.alert(data.error);
     } else {
       window.alert("Registration Successful");
-      StoreTokenInLS(data.token);
-      navigate("/login");
+      StoreTokenInLS(data.token);  // Store the token if available
+      navigate("/login");  // Redirect to login page after registration
     }
   };
 
-
-
+  // Handle wallet connection pop-up
   const handleConnectWallet = async () => {
     setIsPopupVisible(false);
     navigate('/next-page');
@@ -88,13 +78,13 @@ export default function RegistrationForm() {
               Email<span className="text-red-500">*</span>
             </label>
             <input
-               type="email"
-            name="email"
-            id="email"
+              type="email"
+              name="email"
+              id="email"
               className="w-full bg-gray-700 text-white rounded px-4 py-3 outline-none focus:ring-2 focus:ring-teal-500"
               value={user.email}
-            onChange={handleInputs}
-            required
+              onChange={handleInputs}
+              required
               placeholder="Enter your email"
             />
           </div>
@@ -105,13 +95,28 @@ export default function RegistrationForm() {
             </label>
             <input
               type="password"
-            name="password"
-            id="password"
-            value={user.password}
-            onChange={handleInputs}
-            required
+              name="password"
+              id="password"
+              value={user.password}
+              onChange={handleInputs}
+              required
               className="w-full bg-gray-700 text-white rounded px-4 py-3 outline-none focus:ring-2 focus:ring-teal-500"
               placeholder="Enter your password"
+            />
+          </div>
+
+          <div className="mb-6">
+            <label htmlFor="referralEmail" className="block text-sm font-medium text-gray-400 mb-2">
+              Referral Email (Optional)
+            </label>
+            <input
+              type="email"
+              name="referralEmail"
+              id="referralEmail"
+              className="w-full bg-gray-700 text-white rounded px-4 py-3 outline-none focus:ring-2 focus:ring-teal-500"
+              value={user.referralEmail}
+              onChange={handleInputs}
+              placeholder="Enter referral email (optional)"
             />
           </div>
 

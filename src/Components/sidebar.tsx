@@ -26,7 +26,11 @@ const Sidebar = ({ setIsSidebarOpen }: { setIsSidebarOpen: (isOpen: boolean) => 
   const [isStakeDropdownOpen, setStakeDropdownOpen] = useState(false);
   const [isIncomeDropdownOpen, setIncomeDropdownOpen] = useState(false);
   const [isRewardsDropdownOpen, setRewardsDropdownOpen] = useState(false);
-  const [error] = useState('');
+   const [password, setPassword] = useState('');
+  const [confirmMessage, setConfirmMessage] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [error, setError] = useState<string | null>('');
   const navigate = useNavigate();
   // const [token, setToken] = useState(localStorage.getItem("token"));
     //  const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -63,7 +67,38 @@ const handleLogout = async () => {
     console.log("Logout error:", err);
     alert("An error occurred while logging out. Please try again.");
   }
-};
+  };
+  
+  const handleDeleteAccount = async () => {
+    try {
+      setLoading(true);
+      setError(null);  // Reset any previous error
+      setMessage(null);  // Reset any previous message
+
+      const response = await fetch('http://localhost:3000/api/auth/delete', {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('userToken')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ password, confirmMessage }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || 'Failed to delete account');
+      }
+
+      const data = await response.json();
+      setMessage(data.message);  // Show success message
+      // Optionally, redirect the user to a different page
+      // window.location.href = '/login';  // Redirect to login page after account deletion
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleTeamDropdown = () => {
     setTeamDropdownOpen(!isTeamDropdownOpen);
@@ -114,7 +149,7 @@ const handleLogout = async () => {
 //   };
 
   return (
-    <div className="min-h-screen w-64 shadow-lg text-gray-400 dark:text-slate-300 dark:bg-gray-800">
+    <div className="min-h-screen w-64 bg-gradient-to-r from-blue-200 to-blue-400 shadow-2xl dark:from-blue-900 dark:to-blue-400">
       {/* <SimpleBar style={{ maxHeight: "100vh" }}> */}
         <div className="p-6 flex justify-between items-center" style={{ maxHeight: "100vh" }}>
           <div className="flex items-center">

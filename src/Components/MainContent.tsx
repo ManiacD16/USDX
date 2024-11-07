@@ -7,10 +7,14 @@ import "../App.css";
 
 const EcommerceReferralPage = () => {
   const { isAuthenticated, token: userToken } = useAuth(); // Access token and isAuthenticated from AuthContext
-  const [totalInvestment, setTotalInvestment] = useState(0);
+  // const [totalInvestment, setTotalInvestment] = useState(0);
+   const [investmentTotal, setInvestmentTotal] = useState(null);  // State to store the user's investment total
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [dailyROI, setDailyROI] = useState<number | null>(null);
   const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [userInvestmentTotal, setUserInvestmentTotal] = useState(0); // State for user's total investment
+  // const [userInvestmentTotal, setUserInvestmentTotal] = useState<number | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
   const [investAmount, setInvestAmount] = useState("");
   const [inviteLink] = useState("https://example.com/user/signup?referal=undefined");
 
@@ -20,79 +24,66 @@ const EcommerceReferralPage = () => {
     { name: 'PREMIUM', investment: 8500, yield: 10000 },
   ];
 
+ const [selectedPackage, setSelectedPackage] = useState('');
   const [totalIncome, setTotalIncome] = useState(0);
-  const [totalDeposit, setTotalDeposit] = useState(0);
+  // const [totalDeposit, setTotalDeposit] = useState(0);
   const [levelIncome, setLevelIncome] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
   // Fetch total income, total deposit, and level income
  useEffect(() => {
-    const calculateLevelROI = async () => {
-      if (!isAuthenticated) return;
-
-      try {
-        // Data to send to the backend
-        const requestData = {
-          level: 2, // Replace with dynamic level data as needed
-          directReferrals: 4, // Replace with dynamic referral data as needed
-          amount: 1000, // Replace with the amount to calculate ROI for
-        };
-
-        const response = await fetch('http://localhost:3000/api/investments/calculate-level-roi', {
-          method: 'POST', // Changed from GET to POST
-          headers: {
-            'Authorization': `Bearer ${userToken}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(requestData), // Sending data in body
-        });
-
-        if (!response.ok) throw new Error('Failed to fetch data');
-
-        const data = await response.json();
-
-        // Assuming the backend returns { message, roi }
-        if (data.roi !== undefined) {
-          setLevelIncome(data.roi);  // Set ROI calculated based on the request
-        }
-
-        console.log(data.message);  // Optionally log the message for debugging
-
-      } catch (error: any) {
-        console.error("Error fetching income data:", error);
-        setError("Error fetching ROI data");
+    const calculateROI = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/api/investments/calculate-level-roi', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${userToken}`, // Include user token for authentication
       }
-    };
+    });
 
-    calculateLevelROI();
+    const data = await response.json();
+
+    if (response.ok) {
+      console.log('ROI calculated successfully:', data);
+    } else {
+      console.error('Error calculating ROI:', data.error);
+    }
+  } catch (error) {
+    console.error('Network error:', error);
+  }
+};
+
+  calculateROI();
   }, [isAuthenticated, userToken]); // Dependency array to refetch data when token changes
 
 
-  useEffect(() => {
-    // Function to fetch the total investment from the backend
-    const fetchTotalInvestment = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/api/investments/total-investment', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`, // or use cookie/token
-          },
-        });
+ // Fetch the investment total from localStorage when the component mounts
+  const fetchInvestmentTotal = async () => {
+    try {
+      const response = await fetch('http://localhost:3000/api/investments/total-investment', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${userToken}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch total investment');
-        }
-
-        const data = await response.json();
-        setTotalInvestment(data.totalInvestment);  // Set the total investment value
-      } catch (err: any) {
-        setError(err.message); // Handle any errors
+      if (!response.ok) {
+        throw new Error('Failed to fetch investment total');
       }
-    };
 
-    fetchTotalInvestment();  // Call the function when the component mounts
-  }, []); // Empty dependency array ensures this runs only once when component mounts
+      const data = await response.json();
+      setInvestmentTotal(data.investmentTotal); // Set the user's total investment
+    } catch (error) {
+      console.error('Error fetching investment total:', error);
+      postMessage('Failed to load investment total.');
+    }
+  };
+
+  // Fetch investment total when component mounts
+  useEffect(() => {
+    fetchInvestmentTotal();
+  }, []);
 
   // Fetch daily ROI
   const fetchDailyROI = async () => {
@@ -153,33 +144,48 @@ useEffect(() => {
   };
 
   // Handle Investment action
-  const invest = async () => {
+const invest = async () => {
   if (!isAuthenticated) return;
+
   try {
+    const numericAmount = parseFloat(investAmount);  // Ensure it's a number
+    if (isNaN(numericAmount)) {
+      alert('Invalid investment amount');
+      return;
+    }
+
     const response = await fetch('http://localhost:3000/api/investments/invest', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${userToken}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ amount: investAmount }),
+      body: JSON.stringify({ amount: numericAmount, packageType: selectedPackage }),
     });
 
     if (!response.ok) throw new Error('Failed to invest');
 
     const data = await response.json();
-    if (data.newBalance !== undefined) {
-      alert(`Investment successful! New balance: $${data.newBalance}`);
-      // Update the frontend balance state with the new balance
-      setTotalIncome(data.newBalance); // Assuming 'totalIncome' is used for the balance
+    console.log('Response Data:', data);  // Debugging step
+
+    if (data.newActiveInvestmentTotal !== undefined) {
+      alert(`Investment successful! New total active investment: $${data.newActiveInvestmentTotal}`);
+      setUserInvestmentTotal(data.userInvestmentTotal); // Set the total user investment
+      //  localStorage.setItem('InvestmentTotal', data.userInvestmentTotal.toString());  // Persist to localStorage
+      // Update the frontend with the new total active investment
+      setTotalIncome(data.newActiveInvestmentTotal);  // Assuming 'totalIncome' is used to display total investment
+       window.location.reload()
     } else {
-      alert('Investment successful, but no new balance returned.');
+      alert('Investment successful, but no new total active investment returned.');
     }
-  } catch (error: any) {
+  } catch (error) {
     console.error('Invest error:', error);
     setError('Failed to invest');
   }
 };
+
+
+
   // Copy invite link to clipboard
   const copyToClipboard = () => {
     navigator.clipboard
@@ -220,9 +226,9 @@ useEffect(() => {
             <input type="text" value={inviteLink} readOnly className="flex-grow min-w-0 px-3 py-2 text-sm focus:outline-none bg-transparent dark:bg-gray-800" />
             <button onClick={copyToClipboard} className="px-4 py-2 bg-green-600 text-white font-semibold hover:bg-green-700 transition-colors duration-200">COPY</button>
           </div>
-
+<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Daily Dividends Box */}
-          <div className="p-6 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
+          <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
             <div>
               <h2 className="text-lg md:text-2xl font-semibold">Daily Dividends</h2>
               {dailyROI !== null ? (
@@ -235,7 +241,7 @@ useEffect(() => {
           </div>
 
           {/* Level Income Box */}
-          <div className="p-6 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
+          <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
             <div>
               <h2 className="text-lg md:text-2xl font-semibold">Level Income</h2>
               <p className="md:text-lg text-2xl font-bold text-green-600">${levelIncome}</p>
@@ -244,16 +250,16 @@ useEffect(() => {
           </div>
 
           {/* Total Deposit Box */}
-          <div className="p-6 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
+          <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
             <div>
               <h2 className="text-lg md:text-2xl font-semibold">Total Deposit</h2>
-              <p className="md:text-lg text-2xl font-bold text-green-600">${totalInvestment}</p>
+              <p className="md:text-lg text-2xl font-bold text-green-600">${investmentTotal}</p>
             </div>
             <Vault className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
           </div>
 
           {/* Total Income Box */}
-          <div className="p-6 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
+          <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
             <div>
               <h2 className="text-lg md:text-2xl font-semibold">Total Income</h2>
               <p className="md:text-lg text-2xl font-bold text-green-600">${totalIncome}</p>
@@ -262,7 +268,7 @@ useEffect(() => {
           </div>
 
           {/* Deposit Box */}
-          <div className="p-6 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex flex-col md:flex-row justify-between items-center mb-6">
+          <div className="p-6 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex flex-col md:flex-row justify-between items-center mb-6 border border-blue-400">
             <div className="w-full">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg md:text-2xl font-semibold">
@@ -277,8 +283,8 @@ useEffect(() => {
                   onChange={(e) => setInvestAmount(e.target.value)}
                   placeholder="Enter amount to deposit"
                   className="border p-2 rounded-xl w-full md:w-1/2 mr-0 md:mr-2 shadow-xl"
-                />
-                <button onClick={invest} className="mt-2 md:mt-0 px-4 py-2 w-full md:w-1/2 bg-green-600 text-white rounded-xl shadow-xl hover:bg-green-700 mb-6">
+                />          
+                <button onClick={invest} className="mt-2 md:mt-0 px-4 py-2 w-full md:w-1/2 bg-green-600 text-white rounded-xl shadow-xl hover:bg-green-700">
                   Deposit
                 </button>
               </div>
@@ -286,7 +292,7 @@ useEffect(() => {
           </div>
 
           {/* Withdraw Box */}
-          <div className="p-6 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex flex-col md:flex-row justify-between items-center mb-6">
+          <div className="p-6 bg-gradient-to-r border border-blue-400 from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex flex-col md:flex-row justify-between items-center mb-6">
             <div className="w-full">
               <div className="flex justify-between items-center">
                 <h2 className="text-lg md:text-2xl font-semibold">Withdraw</h2>
@@ -304,7 +310,7 @@ useEffect(() => {
               </div>
             </div>
           </div>
-
+          </div>
           {/* Yield Packages Section */}
           <div className="max-w-7xl mx-auto mt-10 p-5 bg-gradient-to-r from-blue-100 shadow-2xl to-purple-100 dark:from-blue-800 dark:to-purple-800 rounded-2xl">
             <h2 className="text-3xl font-bold text-center mb-5 text-gray-800 dark:text-gray-200">Yield Packages</h2>
