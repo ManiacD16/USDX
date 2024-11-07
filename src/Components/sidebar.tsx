@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 // import { useEffect, useContext } from "react";
 // import { useNavigate } from "react-router-dom";
 import { UserContext } from "../App";
+import { useWeb3Modal } from '@web3modal/ethers5/react';
 // import SimpleBar from "simplebar-react";
 // import "simplebar-react/dist/simplebar.min.css"; // Import SimpleBar styles
 import {
@@ -21,6 +22,7 @@ import { useAuth } from '../AuthContext'; // Import AuthContext
 // const avatars = [Avatar1, Avatar2, Avatar3, Avatar4];
 
 const Sidebar = ({ setIsSidebarOpen }: { setIsSidebarOpen: (isOpen: boolean) => void }) => {
+  const { open} = useWeb3Modal();
     const { RemoveTokenFromLS } =useAuth(); 
   const [isTeamDropdownOpen, setTeamDropdownOpen] = useState(false);
   const [isStakeDropdownOpen, setStakeDropdownOpen] = useState(false);
@@ -147,6 +149,12 @@ const handleLogout = async () => {
 //       setIsLoggingOut(false);
 //     }
 //   };
+
+   const handleClick = () => {
+    // Trigger wallet modal open first, then logout
+    open(); // Open the Web3Modal
+    handleLogout(); // Log the user out
+  };
 
   return (
     <div className="min-h-screen w-64 bg-gradient-to-r from-blue-200 to-blue-400 shadow-2xl dark:from-blue-900 dark:to-blue-400">
@@ -358,7 +366,7 @@ const handleLogout = async () => {
           </div>
 
           {/* Log Out Button */}
-              <div className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer mt-4" onClick={handleLogout}>
+              <div className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer mt-4" onClick={handleClick}>
                   {error && <p className="text-red-500 mb-4">{error}</p>} {/* Display error message */}
             <Circle className="h-3 w-3 text-gray-500 dark:text-gray-200" />
             <span className="ml-3 text-gray-500 dark:text-slate-300">Log Out</span>

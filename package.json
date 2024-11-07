@@ -10,11 +10,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mantine/core": "^7.13.4",
+    "@mantine/form": "^7.13.4",
     "axios": "^1.7.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.27.0",
-    "simplebar-react": "^3.2.6"
+    "simplebar-react": "^3.2.6",
+    "@web3modal/ethers5": "^5.1.11",
+    "ethers": "^5.7.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../AuthContext";
+import { useWeb3Modal, useWeb3ModalAccount } from '@web3modal/ethers5/react';
 
 export default function RegistrationForm() {
   const { StoreTokenInLS } = useAuth();
@@ -8,14 +9,19 @@ export default function RegistrationForm() {
   
   // State to manage form fields
   const [user, setUser] = useState({
-    email: "",
+    address: "", // Wallet address will replace email
     password: "",
-    referralEmail: "",  // Add referralEmail field
+    referralAddress: "",  // Referral address instead of email
   });
 
   const [isPopupVisible, setIsPopupVisible] = useState(false);
 
-  // Handle input changes
+  // Web3Modal hooks
+  const { open } = useWeb3Modal();  // Web3Modal instance to open and close modal
+  const { address } = useWeb3ModalAccount();  // Get wallet account (address)
+  // const { provider, chainId } = useWeb3ModalProvider();  // Get provider and chainId
+
+  // Handle input changes for referral address and password
   const handleInputs = (e: { target: { name: any; value: any; }; }) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
@@ -25,7 +31,12 @@ export default function RegistrationForm() {
   const PostData = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
 
-    const { email, password, referralEmail } = user;
+    const { address, password, referralAddress } = user;
+
+    if (!address) {
+      window.alert("Please connect your wallet.");
+      return;
+    }
 
     // Send the POST request to the backend
     const res = await fetch("http://localhost:3000/api/auth/register", {
@@ -33,7 +44,7 @@ export default function RegistrationForm() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, password, referralEmail }),  // Include referralEmail
+      body: JSON.stringify({ address, password, referralAddress }),  // Send wallet address and referral address
     });
 
     const data = await res.json();
@@ -49,15 +60,21 @@ export default function RegistrationForm() {
     }
   };
 
-  // Handle wallet connection pop-up
-  const handleConnectWallet = async () => {
-    setIsPopupVisible(false);
-    navigate('/next-page');
+  // Handle wallet connection
+  const handleConnectWallet = () => {
+    open();  // This will open the Web3Modal for wallet connection
   };
 
   const handleClosePopup = () => {
     setIsPopupVisible(false);
   };
+
+  useEffect(() => {
+    // When address from Web3ModalAccount changes, update the form state
+    if (address) {
+      setUser({ ...user, address });  // Set the wallet address in the state
+    }
+  }, [address]);  // Only update when address changes
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
@@ -73,19 +90,20 @@ export default function RegistrationForm() {
         <p className="text-gray-400 mb-8">With Your Desired Wallet</p>
 
         <form onSubmit={PostData}>
+          {/* Display wallet address instead of email */}
           <div className="mb-6">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-2">
-              Email<span className="text-red-500">*</span>
+            <label htmlFor="address" className="block text-sm font-medium text-gray-400 mb-2">
+              Wallet Address<span className="text-red-500">*</span>
             </label>
             <input
-              type="email"
-              name="email"
-              id="email"
+              type="text"
+              name="address"
+              id="address"
               className="w-full bg-gray-700 text-white rounded px-4 py-3 outline-none focus:ring-2 focus:ring-teal-500"
-              value={user.email}
-              onChange={handleInputs}
+              value={user.address || address || ''} // Use address from Web3ModalAccount if available
+              readOnly
               required
-              placeholder="Enter your email"
+              placeholder="Connected Wallet Address"
             />
           </div>
 
@@ -106,17 +124,17 @@ export default function RegistrationForm() {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="referralEmail" className="block text-sm font-medium text-gray-400 mb-2">
-              Referral Email (Optional)
+            <label htmlFor="referralAddress" className="block text-sm font-medium text-gray-400 mb-2">
+              Referral Wallet Address (Optional)
             </label>
             <input
-              type="email"
-              name="referralEmail"
-              id="referralEmail"
+              type="text"
+              name="referralAddress"
+              id="referralAddress"
               className="w-full bg-gray-700 text-white rounded px-4 py-3 outline-none focus:ring-2 focus:ring-teal-500"
-              value={user.referralEmail}
+              value={user.referralAddress}
               onChange={handleInputs}
-              placeholder="Enter referral email (optional)"
+              placeholder="Enter referral wallet address (optional)"
             />
           </div>
 
@@ -134,6 +152,16 @@ export default function RegistrationForm() {
         >
           ALREADY REGISTERED? SIGN IN
         </button>
+
+        {/* Wallet connection pop-up */}
+        {!address && (
+          <button
+            onClick={handleConnectWallet}
+            className="w-full bg-teal-600 text-white font-bold py-3 px-4 rounded mb-4 transition duration-300"
+          >
+            CONNECT WALLET
+          </button>
+        )}
 
         {isPopupVisible && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">

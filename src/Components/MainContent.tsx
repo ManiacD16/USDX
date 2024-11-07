@@ -13,6 +13,7 @@ const EcommerceReferralPage = () => {
   const [dailyROI, setDailyROI] = useState<number | null>(null);
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [userInvestmentTotal, setUserInvestmentTotal] = useState(0); // State for user's total investment
+  const [rankReward, setRankReward] = useState(null);
   // const [userInvestmentTotal, setUserInvestmentTotal] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [investAmount, setInvestAmount] = useState("");
@@ -159,12 +160,14 @@ const invest = async () => {
   if (!isAuthenticated) return;
 
   try {
+    // Parse and validate the investment amount
     const numericAmount = parseFloat(investAmount);  // Ensure it's a number
     if (isNaN(numericAmount)) {
       alert('Invalid investment amount');
       return;
     }
 
+    // Send investment request to backend
     const response = await fetch('http://localhost:3000/api/investments/invest', {
       method: 'POST',
       headers: {
@@ -179,13 +182,26 @@ const invest = async () => {
     const data = await response.json();
     console.log('Response Data:', data);  // Debugging step
 
+    // Handle backend response:
     if (data.newActiveInvestmentTotal !== undefined) {
+      // Notify the user that the investment was successful
       alert(`Investment successful! New total active investment: $${data.newActiveInvestmentTotal}`);
-      setUserInvestmentTotal(data.userInvestmentTotal); // Set the total user investment
-      //  localStorage.setItem('InvestmentTotal', data.userInvestmentTotal.toString());  // Persist to localStorage
-      // Update the frontend with the new total active investment
-      setTotalIncome(data.newActiveInvestmentTotal);  // Assuming 'totalIncome' is used to display total investment
-       window.location.reload()
+
+      // Update frontend state based on the response
+      setUserInvestmentTotal(data.userInvestmentTotal); // Update the user's total investment
+      setTotalIncome(data.newActiveInvestmentTotal);     // Update the total active investment
+
+      // Optionally, store the new investment total in localStorage (if needed)
+      // localStorage.setItem('InvestmentTotal', data.userInvestmentTotal.toString());
+
+      // Display the yield package details (optional)
+      if (data.yieldPackage) {
+        const { name, yield: yieldRate } = data.yieldPackage;
+        alert(`You invested in the ${name} with a ${yieldRate * 100}% yield.`); // Show the yield info
+      }
+
+      // Reload the page or update the UI as necessary
+      window.location.reload();
     } else {
       alert('Investment successful, but no new total active investment returned.');
     }
@@ -196,6 +212,35 @@ const invest = async () => {
 };
 
 
+const fetchRankReward = async (): Promise<any> => {
+  try {
+    const response = await fetch('http://localhost:3000/api/investments/rank-reward', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${userToken}`, // Assuming you store the token in localStorage
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch rank reward');
+    }
+
+    const data = await response.json();
+
+    // Render data in frontend (example)
+    console.log(data); // Display the rank reward info or update the UI accordingly
+    alert(`Your current reward for ${data.rank} is: $${data.claimedReward || 0}`);
+    return data; // Return the data value
+  } catch (error) {
+    console.error("Error fetching rank reward:", error);
+    alert("Error fetching rank reward");
+  }
+}
+
+useEffect(() => {
+  fetchRankReward().then((data) => setRankReward(data));
+}, []);
 
   // Copy invite link to clipboard
   const copyToClipboard = () => {
@@ -256,6 +301,15 @@ const invest = async () => {
             <div>
               <h2 className="text-lg md:text-2xl font-semibold">Level Income</h2>
               <p className="md:text-lg text-2xl font-bold text-green-600">${totalROI}</p>
+            </div>
+            <GitBranchPlus className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
+            </div>
+            
+            {/* Level Income Box */}
+          <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
+            <div>
+              <h2 className="text-lg md:text-2xl font-semibold">Rank Rewards</h2>
+              <p className="md:text-lg text-2xl font-bold text-green-600">${rankReward}</p>
             </div>
             <GitBranchPlus className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
           </div>

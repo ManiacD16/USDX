@@ -8,6 +8,9 @@ import Income from "./Components/Income";
 import Rewards from "./Components/Rewards";
 import Register from "./Components/Register";
 import Login from "./Components/Login";
+// import Admin from "./Admin/admin";
+// import Alogin from "./Admin/login"
+// import Asignup from "./Admin/signup"
 import { initialState, reducer } from "./reducer/UseReducer";
 
 // Create a context API
@@ -27,10 +30,13 @@ const App: React.FC = () => {
             <Route path="/income" element={<Income />} />
             <Route path="/rewards" element={<Rewards />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="" element={<Navigate to="/user" />} /> {/* Redirect to user by default */}
+            <Route path="/" element={<Login />} />
+            {/* <Route path="/admin" element={<Admin />} /> */}
+            {/* <Route path="/admin/login" element={<Alogin />} /> */}
+            {/* <Route path="/admin/signup" element={<Asignup />} /> */}
+            <Route path="" element={<Navigate to="/" />} /> {/* Redirect to user by default */}
 
-            <Route path="*" element={<Navigate to="/user" />} /> {/* Redirect to user for unknown paths */}
+            <Route path="*" element={<Navigate to="/" />} /> {/* Redirect to user for unknown paths */}
           </Routes>
         </div>
       </Router>

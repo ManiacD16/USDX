@@ -14,6 +14,7 @@ import {
 } from "lucide-react"; // Import Menu icon
 import useClickOutside from "./useClickOutside"; // Import the custom hook
 import { useNavigate } from "react-router-dom";
+import { useWeb3Modal } from '@web3modal/ethers5/react';
 
 interface HeaderProps {
   isSidebarOpen: boolean;
@@ -23,7 +24,8 @@ interface HeaderProps {
   showWalletAddress: boolean;
 }
 
-const Header : React.FC<HeaderProps> = ({setIsSidebarOpen}) => {
+const Header: React.FC<HeaderProps> = ({ setIsSidebarOpen }) => {
+     const { open} = useWeb3Modal();
 const [isSearchActive, setIsSearchActive] = useState(false);    //   isSearchActive
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "system");
@@ -145,7 +147,7 @@ const applyTheme = (selectedTheme: React.SetStateAction<string>) => {
 
                           {/* </div> */}
                           <Home className="h-5 w-5 text-gray-500 cursor-pointer"
-                              onClick={() => navigate("/")}
+                               onClick={() => { open();  navigate("/");}}
                           />
                           {/* Uncomment and adjust the dropdown as needed */}
                           <div ref={dropdownRef} className="relative">
