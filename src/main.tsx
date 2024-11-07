@@ -7,6 +7,7 @@ import { createRoot } from 'react-dom/client'
 import { AuthProvider } from "./AuthContext";
 import { createWeb3Modal, defaultConfig } from '@web3modal/ethers5/react';
 
+
 // 1. Your WalletConnect Cloud project ID
 const projectId = '99b8bb8de0a44e889b511ffeb2fbf79a';
 

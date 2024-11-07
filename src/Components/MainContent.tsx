@@ -28,7 +28,7 @@ const EcommerceReferralPage = () => {
  const [selectedPackage, setSelectedPackage] = useState('');
   const [totalIncome, setTotalIncome] = useState(0);
   // const [totalDeposit, setTotalDeposit] = useState(0);
-  const [levelIncome, setLevelIncome] = useState(0);
+  // const [levelIncome, setLevelIncome] = useState(0);
   const [error, setError] = useState<string | null>(null);
    const [roiData, setRoiData] = useState(null);
   const [totalROI, setTotalROI] = useState(0);  // State to store total ROI
