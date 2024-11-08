@@ -7,6 +7,8 @@ import {
   HandCoins,
   PiggyBank,
   Vault,
+  Currency,
+  Crown,
   Wallet,
 } from "lucide-react";
 import Sidebar from "./sidebar";
@@ -29,13 +31,14 @@ const EcommerceReferralPage = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [dailyROI, setDailyROI] = useState<number | null>(null);
   const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [balance, setBalance] = useState(null);
   // const [userInvestmentTotal, setUserInvestmentTotal] = useState(0); // State for user's total investment
   const [rankReward, setRankReward] = useState(null);
   // const [userInvestmentTotal, setUserInvestmentTotal] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
-  const [investAmount, setInvestAmount] = useState("");
-  const [inviteLink] = useState(
-    "https://example.com/user/signup?referal=undefined"
+  // const [investAmount, setInvestAmount] = useState("");
+  const [inviteLink, setInviteLink] = useState(
+    "http://localhost:5173/#/register?referralAddress=undefined"
   );
 
   const yieldPackages = [
@@ -182,6 +185,47 @@ const EcommerceReferralPage = () => {
       alert("Investment failed.");
     }
   };
+
+  useEffect(() => {
+    // When the address changes or is available, update the invite link dynamically
+    if (address) {
+      setInviteLink(
+        `http://localhost:5173/#/register?referralAddress=${address}`
+      );
+    }
+  }, [address]); // Re-run when address changes
+
+  useEffect(() => {
+    const getUserBalance = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/investments/balance",
+          {
+            method: "GET",
+
+            headers: {
+              Authorization: `Bearer ${userToken}`, // Assume token is stored in localStorage
+              "Content-Type": "application/json",
+            },
+            credentials: "include", // Make sure cookies are included with the request
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(response.statusText || "Invalid Credentials");
+        }
+
+        const data = await response.json();
+        setBalance(data.balance);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getUserBalance();
+  }, []); // Empty dependency array ensures this runs only once on component mount
 
   // Fetch total income, total deposit, and level income
   useEffect(() => {
@@ -534,7 +578,7 @@ const EcommerceReferralPage = () => {
               <GitBranchPlus className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
             </div>
 
-            {/* Level Income Box */}
+            {/* Rank Rewards Box */}
             <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
               <div>
                 <h2 className="text-lg md:text-2xl font-semibold">
@@ -544,7 +588,7 @@ const EcommerceReferralPage = () => {
                   ${rankReward === null ? 0 : rankReward}
                 </p>
               </div>
-              <GitBranchPlus className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
+              <Crown className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
             </div>
 
             {/* Total Deposit Box */}
@@ -571,6 +615,17 @@ const EcommerceReferralPage = () => {
                 </p>
               </div>
               <Wallet className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
+            </div>
+
+            {/* Balance Box */}
+            <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
+              <div>
+                <h2 className="text-lg md:text-2xl font-semibold">Balance</h2>
+                <p className="md:text-lg text-2xl font-bold text-green-600">
+                  ${balance}
+                </p>
+              </div>
+              <Currency className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
             </div>
 
             {/* Deposit Box */}

@@ -1,34 +1,33 @@
-import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../AuthContext";
-import { useWeb3Modal, useWeb3ModalAccount } from '@web3modal/ethers5/react';
+import { useWeb3Modal, useWeb3ModalAccount } from "@web3modal/ethers5/react";
 
 export default function RegistrationForm() {
   const { StoreTokenInLS } = useAuth();
   const navigate = useNavigate();
-  
+
   // State to manage form fields
   const [user, setUser] = useState({
     address: "", // Wallet address will replace email
     password: "",
-    referralAddress: "",  // Referral address instead of email
+    referralAddress: "", // Referral address instead of email
   });
 
   const [isPopupVisible, setIsPopupVisible] = useState(false);
 
   // Web3Modal hooks
-  const { open } = useWeb3Modal();  // Web3Modal instance to open and close modal
-  const { address } = useWeb3ModalAccount();  // Get wallet account (address)
-  // const { provider, chainId } = useWeb3ModalProvider();  // Get provider and chainId
+  const { open } = useWeb3Modal(); // Web3Modal instance to open and close modal
+  const { address } = useWeb3ModalAccount(); // Get wallet account (address)
 
   // Handle input changes for referral address and password
-  const handleInputs = (e: { target: { name: any; value: any; }; }) => {
+  const handleInputs = (e: { target: { name: any; value: any } }) => {
     const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
 
   // Handle form submission
-  const PostData = async (e: { preventDefault: () => void; }) => {
+  const PostData = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
     const { address, password, referralAddress } = user;
@@ -44,37 +43,53 @@ export default function RegistrationForm() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ address, password, referralAddress }),  // Send wallet address and referral address
+      body: JSON.stringify({ address, password, referralAddress }), // Send wallet address and referral address
     });
 
     const data = await res.json();
-    console.log('Response from server:', data);
+    console.log("Response from server:", data);
 
     // Check for errors and show a message
     if (data.error) {
       window.alert(data.error);
     } else {
       window.alert("Registration Successful");
-      StoreTokenInLS(data.token);  // Store the token if available
-      navigate("/login");  // Redirect to login page after registration
+      StoreTokenInLS(data.token); // Store the token if available
+      navigate("/login"); // Redirect to login page after registration
     }
   };
 
   // Handle wallet connection
   const handleConnectWallet = () => {
-    open();  // This will open the Web3Modal for wallet connection
+    open(); // This will open the Web3Modal for wallet connection
   };
 
   const handleClosePopup = () => {
     setIsPopupVisible(false);
   };
 
+  // This effect will run on component mount
   useEffect(() => {
-    // When address from Web3ModalAccount changes, update the form state
-    if (address) {
-      setUser({ ...user, address });  // Set the wallet address in the state
+    // Extract the referral address from the URL hash (after #)
+    const urlParams = new URLSearchParams(window.location.hash.split("?")[1]);
+    const referralFromUrl = urlParams.get("referralAddress"); // Get the referral address from URL
+
+    // If a referral address is present in the URL, update the state
+    if (referralFromUrl) {
+      setUser((prevUser) => ({
+        ...prevUser,
+        referralAddress: referralFromUrl, // Set the referral address
+      }));
     }
-  }, [address]);  // Only update when address changes
+
+    // If Web3Modal has provided an address, set it as the user's wallet address
+    if (address) {
+      setUser((prevUser) => ({
+        ...prevUser,
+        address: address, // Set the wallet address
+      }));
+    }
+  }, [address]); // Dependency array to ensure it runs when the component mounts or address changes
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
@@ -82,17 +97,24 @@ export default function RegistrationForm() {
         <div className="flex items-center justify-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-white">TMC</h1>
-            <p className="text-teal-400 text-sm tracking-wider">Trade Market Cap</p>
+            <p className="text-teal-400 text-sm tracking-wider">
+              Trade Market Cap
+            </p>
           </div>
         </div>
 
-        <h2 className="text-3xl font-bold text-white mb-2">Create Your Account Now</h2>
+        <h2 className="text-3xl font-bold text-white mb-2">
+          Create Your Account Now
+        </h2>
         <p className="text-gray-400 mb-8">With Your Desired Wallet</p>
 
         <form onSubmit={PostData}>
           {/* Display wallet address instead of email */}
           <div className="mb-6">
-            <label htmlFor="address" className="block text-sm font-medium text-gray-400 mb-2">
+            <label
+              htmlFor="address"
+              className="block text-sm font-medium text-gray-400 mb-2"
+            >
               Wallet Address<span className="text-red-500">*</span>
             </label>
             <input
@@ -100,7 +122,7 @@ export default function RegistrationForm() {
               name="address"
               id="address"
               className="w-full bg-gray-700 text-white rounded px-4 py-3 outline-none focus:ring-2 focus:ring-teal-500"
-              value={user.address || address || ''} // Use address from Web3ModalAccount if available
+              value={user.address || address || ""} // Use address from Web3ModalAccount if available
               readOnly
               required
               placeholder="Connected Wallet Address"
@@ -108,7 +130,10 @@ export default function RegistrationForm() {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-400 mb-2">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-400 mb-2"
+            >
               Password<span className="text-red-500">*</span>
             </label>
             <input
@@ -124,7 +149,10 @@ export default function RegistrationForm() {
           </div>
 
           <div className="mb-6">
-            <label htmlFor="referralAddress" className="block text-sm font-medium text-gray-400 mb-2">
+            <label
+              htmlFor="referralAddress"
+              className="block text-sm font-medium text-gray-400 mb-2"
+            >
               Referral Wallet Address (Optional)
             </label>
             <input
@@ -166,8 +194,12 @@ export default function RegistrationForm() {
         {isPopupVisible && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-              <h2 className="text-lg font-bold text-white mb-2">Connect Your Wallet</h2>
-              <p className="text-gray-400 mb-4">Please connect your wallet to proceed.</p>
+              <h2 className="text-lg font-bold text-white mb-2">
+                Connect Your Wallet
+              </h2>
+              <p className="text-gray-400 mb-4">
+                Please connect your wallet to proceed.
+              </p>
               <button
                 onClick={handleConnectWallet}
                 className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-500 transition duration-300"
