@@ -45,7 +45,7 @@ const EcommerceReferralPage = () => {
   ];
 
   // const [selectedPackage, setSelectedPackage] = useState("");
-  const [totalIncome, setTotalIncome] = useState(0);
+  // const [totalIncome, setTotalIncome] = useState(0);
   // const [totalDeposit, setTotalDeposit] = useState(0);
   // const [levelIncome, setLevelIncome] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -152,6 +152,7 @@ const EcommerceReferralPage = () => {
       console.log("Transfer Transaction:", transferTx.hash);
       await transferTx.wait(); // Wait for the transfer to complete
 
+      alert(`Investment successful! Amount invested: ${sanitizedAmount}`);
       alert(`Investment successful! Transaction hash: ${transferTx.hash}`);
 
       // Send the **normal amount** to backend (without 18 decimals)
@@ -170,6 +171,8 @@ const EcommerceReferralPage = () => {
           }),
         }
       );
+
+      window.location.reload();
 
       if (!response.ok) throw new Error("Investment registration failed");
       const data = await response.json();
@@ -340,6 +343,8 @@ const EcommerceReferralPage = () => {
       alert("An error occurred during the withdrawal process.");
     }
   };
+
+  const totalIncome = (rankReward || 0) + (totalROI || 0) + (dailyROI || 0);
 
   // Handle Investment action
   // const invest = async () => {
