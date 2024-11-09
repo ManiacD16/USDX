@@ -621,7 +621,10 @@ const EcommerceReferralPage = () => {
               <div>
                 <h2 className="text-lg md:text-2xl font-semibold">Rank</h2>
                 <p className="md:text-lg text-2xl font-bold text-green-600">
-                  Your rank is: {rank}
+                  <span className="text-md text-black font-semibold">
+                    Your rank is:{" "}
+                  </span>
+                  {rank}
                 </p>
               </div>
               <GitBranchPlus className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
