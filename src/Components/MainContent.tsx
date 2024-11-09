@@ -227,6 +227,46 @@ const EcommerceReferralPage = () => {
     getUserBalance();
   }, []); // Empty dependency array ensures this runs only once on component mount
 
+  useEffect(() => {
+    async function getUserRank() {
+      try {
+        // Send a GET request to the backend to get the user's rank
+        const response = await fetch(
+          "http://localhost:3000/api/investments/determineRank",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${userToken}`, // Assume token is stored in localStorage
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        // Handle the response
+        if (response.ok) {
+          const data = await response.json();
+          console.log("User Rank:", data.rank); // Log or use the rank data
+
+          // Example: Update the UI with the user's rank
+          (
+            document.getElementById("userRank") as HTMLElement
+          ).textContent = `Your rank: ${data.rank}`;
+        } else {
+          const errorData = await response.json();
+          console.error("Error fetching rank:", errorData.error);
+          alert("Error fetching rank: " + errorData.error);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Failed to fetch user rank");
+      }
+    }
+    getUserRank();
+  }, []);
+
+  // // Call this function when the page loads or on some event
+  // getUserRank();
+
   // Fetch total income, total deposit, and level income
   useEffect(() => {
     const calculateROI = async () => {
@@ -573,6 +613,17 @@ const EcommerceReferralPage = () => {
                 </h2>
                 <p className="md:text-lg text-2xl font-bold text-green-600">
                   ${totalROI}
+                </p>
+              </div>
+              <GitBranchPlus className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
+            </div>
+
+            {/* Level Income Box */}
+            <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
+              <div>
+                <h2 className="text-lg md:text-2xl font-semibold">Rank</h2>
+                <p className="md:text-lg text-2xl font-bold text-green-600">
+                  {getUserRank}
                 </p>
               </div>
               <GitBranchPlus className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
