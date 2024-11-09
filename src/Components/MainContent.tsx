@@ -57,6 +57,7 @@ const EcommerceReferralPage = () => {
   const { walletProvider } = useWeb3ModalProvider();
   const { address } = useWeb3ModalAccount();
   const [investmentAmount, setInvestmentAmount] = useState("");
+  const [rank, setRank] = useState(null); // Initial state for the user's rank
 
   const invest = async () => {
     if (!walletProvider || !address) {
@@ -236,33 +237,30 @@ const EcommerceReferralPage = () => {
           {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${userToken}`, // Assume token is stored in localStorage
+              Authorization: `Bearer ${userToken}`,
               "Content-Type": "application/json",
             },
           }
         );
 
-        // Handle the response
         if (response.ok) {
           const data = await response.json();
-          console.log("User Rank:", data.rank); // Log or use the rank data
-
-          // Example: Update the UI with the user's rank
-          (
-            document.getElementById("userRank") as HTMLElement
-          ).textContent = `Your rank: ${data.rank}`;
+          console.log("User Rank:", data.rank); // Log the rank to the console for debugging
+          setRank(data.rank); // Update state with the rank
         } else {
           const errorData = await response.json();
-          console.error("Error fetching rank:", errorData.error);
-          alert("Error fetching rank: " + errorData.error);
+          setError(errorData.error); // Set error state if the request fails
         }
       } catch (error) {
         console.error("Error:", error);
-        alert("Failed to fetch user rank");
+        setError("Failed to fetch user rank");
+      } finally {
+        setLoading(false); // Stop loading once the request is completed
       }
     }
+
     getUserRank();
-  }, []);
+  }, [userToken]); // Only run this effect when the userToken changes
 
   // // Call this function when the page loads or on some event
   // getUserRank();
@@ -618,12 +616,12 @@ const EcommerceReferralPage = () => {
               <GitBranchPlus className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
             </div>
 
-            {/* Level Income Box */}
+            {/* Rank Box */}
             <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
               <div>
                 <h2 className="text-lg md:text-2xl font-semibold">Rank</h2>
                 <p className="md:text-lg text-2xl font-bold text-green-600">
-                  {getUserRank}
+                  Your rank is: {rank}
                 </p>
               </div>
               <GitBranchPlus className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
