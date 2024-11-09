@@ -34,6 +34,8 @@ const EcommerceReferralPage = () => {
   const [balance, setBalance] = useState(null);
   // const [userInvestmentTotal, setUserInvestmentTotal] = useState(0); // State for user's total investment
   const [rankReward, setRankReward] = useState(null);
+  console.log("rankReward ", rankReward);
+
   // const [userInvestmentTotal, setUserInvestmentTotal] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   // const [investAmount, setInvestAmount] = useState("");
@@ -45,6 +47,7 @@ const EcommerceReferralPage = () => {
     { name: "BASIC", investment: 950, yield: 1000 },
     { name: "STANDARD", investment: 4500, yield: 5000 },
     { name: "PREMIUM", investment: 8500, yield: 10000 },
+    { name: "ROYAL", investment: 20000, yield: 25000 },
   ];
 
   // const [selectedPackage, setSelectedPackage] = useState("");
@@ -57,7 +60,7 @@ const EcommerceReferralPage = () => {
   const { walletProvider } = useWeb3ModalProvider();
   const { address } = useWeb3ModalAccount();
   const [investmentAmount, setInvestmentAmount] = useState("");
-  const [rank, setRank] = useState(null); // Initial state for the user's rank
+  // const [rank, setRank] = useState(null); // Initial state for the user's rank
 
   const invest = async () => {
     if (!walletProvider || !address) {
@@ -228,39 +231,39 @@ const EcommerceReferralPage = () => {
     getUserBalance();
   }, []); // Empty dependency array ensures this runs only once on component mount
 
-  useEffect(() => {
-    async function getUserRank() {
-      try {
-        // Send a GET request to the backend to get the user's rank
-        const response = await fetch(
-          "http://localhost:3000/api/investments/determineRank",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${userToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+  // useEffect(() => {
+  //   async function getUserRank() {
+  //     try {
+  //       // Send a GET request to the backend to get the user's rank
+  //       const response = await fetch(
+  //         "http://localhost:3000/api/investments/determineRank",
+  //         {
+  //           method: "GET",
+  //           headers: {
+  //             Authorization: `Bearer ${userToken}`,
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       );
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log("User Rank:", data.rank); // Log the rank to the console for debugging
-          setRank(data.rank); // Update state with the rank
-        } else {
-          const errorData = await response.json();
-          setError(errorData.error); // Set error state if the request fails
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        setError("Failed to fetch user rank");
-      } finally {
-        setLoading(false); // Stop loading once the request is completed
-      }
-    }
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         console.log("User Rank:", data.rank); // Log the rank to the console for debugging
+  //         setRank(data.rank); // Update state with the rank
+  //       } else {
+  //         const errorData = await response.json();
+  //         setError(errorData.error); // Set error state if the request fails
+  //       }
+  //     } catch (error) {
+  //       console.error("Error:", error);
+  //       setError("Failed to fetch user rank");
+  //     } finally {
+  //       setLoading(false); // Stop loading once the request is completed
+  //     }
+  //   }
 
-    getUserRank();
-  }, [userToken]); // Only run this effect when the userToken changes
+  //   getUserRank();
+  // }, [userToken]); // Only run this effect when the userToken changes
 
   // // Call this function when the page loads or on some event
   // getUserRank();
@@ -504,9 +507,11 @@ const EcommerceReferralPage = () => {
       const data = await response.json();
 
       // Render data in frontend (example)
-      console.log(data); // Display the rank reward info or update the UI accordingly
+      console.log("rank reward ", data); // Display the rank reward info or update the UI accordingly
       alert(
-        `Your current reward for ${data.rank} is: $${data.claimedReward || 0}`
+        `Your current reward for ${data.rank} Rank is: $${
+          data.claimedReward || 0
+        }`
       );
       return data; // Return the data value
     } catch (error) {
@@ -516,7 +521,7 @@ const EcommerceReferralPage = () => {
   };
 
   useEffect(() => {
-    fetchRankReward().then((data) => setRankReward(data));
+    fetchRankReward().then((data) => setRankReward(data.rankReward));
   }, []);
 
   // Copy invite link to clipboard
@@ -617,7 +622,7 @@ const EcommerceReferralPage = () => {
             </div>
 
             {/* Rank Box */}
-            <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
+            {/* <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
               <div>
                 <h2 className="text-lg md:text-2xl font-semibold">Rank</h2>
                 <p className="md:text-lg text-2xl font-bold text-green-600">
@@ -628,7 +633,7 @@ const EcommerceReferralPage = () => {
                 </p>
               </div>
               <GitBranchPlus className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
-            </div>
+            </div> */}
 
             {/* Rank Rewards Box */}
             <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
