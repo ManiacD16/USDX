@@ -33,17 +33,14 @@ const EcommerceReferralPage = () => {
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [balance, setBalance] = useState(null);
   const [yieldbalance, setyieldBalance] = useState(null);
-  // const [userInvestmentTotal, setUserInvestmentTotal] = useState(0); // State for user's total investment
   const [rankReward, setRankReward] = useState(null);
   console.log("rankReward ", rankReward);
-  const [userInvestmentTotal, setUserInvestmentTotal] = useState(null); // User's total investment
-  const [newActiveInvestmentTotal, setNewActiveInvestmentTotal] =
-    useState(null); // New active investment total after the purchase
-  const [liquidityFee, setLiquidityFee] = useState(null); // The liquidity fee (calculated)
-  const [actualInvestment, setActualInvestment] = useState(null); // Actual investment based on the package
+  // const [userInvestmentTotal, setUserInvestmentTotal] = useState(null); // User's total investment
+  // const [newActiveInvestmentTotal, setNewActiveInvestmentTotal] =
+  //   useState(null); // New active investment total after the purchase
+  // const [liquidityFee, setLiquidityFee] = useState(null); // The liquidity fee (calculated)
+  // const [actualInvestment, setActualInvestment] = useState(null); // Actual investment based on the package
   const [withdrawType, setWithdrawType] = useState("invest_withdraw"); // Default type
-
-  // const [userInvestmentTotal, setUserInvestmentTotal] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   // const [investAmount, setInvestAmount] = useState("");
   const [inviteLink, setInviteLink] = useState(
@@ -704,10 +701,10 @@ const EcommerceReferralPage = () => {
       }
 
       // Update the investment totals based on the backend response
-      setNewActiveInvestmentTotal(data.newActiveInvestmentTotal);
-      setLiquidityFee(data.liquidityFee);
-      setActualInvestment(data.actualInvestment);
-      setUserInvestmentTotal(data.userInvestmentTotal); // Update the total investment
+      // setNewActiveInvestmentTotal(data.newActiveInvestmentTotal);
+      // setLiquidityFee(data.liquidityFee);
+      // setActualInvestment(data.actualInvestment);
+      // setUserInvestmentTotal(data.userInvestmentTotal); // Update the total investment
       setLoading(false);
     } catch (error: any) {
       console.log(
@@ -988,7 +985,7 @@ const EcommerceReferralPage = () => {
               </p>
             </div>
 
-            {userInvestmentTotal !== null && (
+            {/* {userInvestmentTotal !== null && (
               <div className="mt-6 text-center">
                 <p className="text-lg text-gray-800 dark:text-gray-200">
                   Your Total Investment: ${userInvestmentTotal}
@@ -1003,7 +1000,7 @@ const EcommerceReferralPage = () => {
                   Actual Investment: ${actualInvestment}
                 </p>
               </div>
-            )}
+            )} */}
           </div>
         </main>
       </div>
