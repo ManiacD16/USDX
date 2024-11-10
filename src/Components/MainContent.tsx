@@ -40,6 +40,7 @@ const EcommerceReferralPage = () => {
     useState(null); // New active investment total after the purchase
   const [liquidityFee, setLiquidityFee] = useState(null); // The liquidity fee (calculated)
   const [actualInvestment, setActualInvestment] = useState(null); // Actual investment based on the package
+  const [withdrawType, setWithdrawType] = useState("invest_withdraw"); // Default type
 
   // const [userInvestmentTotal, setUserInvestmentTotal] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -862,6 +863,17 @@ const EcommerceReferralPage = () => {
                   <HandCoins className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
                 </div>
                 <div className="flex flex-col mt-6 md:flex-row">
+                  {/* Dropdown for withdrawal type */}
+                  <select
+                    value={withdrawType}
+                    onChange={(e) => setWithdrawType(e.target.value)}
+                    className="border p-2 rounded-xl w-full md:w-1/2 mr-0 md:mr-2 shadow-xl"
+                  >
+                    <option value="invest_withdraw">Invest Withdraw</option>
+                    <option value="yield_withdraw">Yield Withdraw</option>
+                  </select>
+
+                  {/* Input field for withdrawal amount */}
                   <input
                     type="number"
                     value={withdrawAmount}
@@ -869,6 +881,8 @@ const EcommerceReferralPage = () => {
                     placeholder="Enter amount to withdraw"
                     className="border p-2 rounded-xl w-full md:w-1/2 mr-0 md:mr-2 shadow-xl"
                   />
+
+                  {/* Withdraw button */}
                   <button
                     onClick={withdraw}
                     className="mt-2 md:mt-0 px-4 py-2 w-full md:w-1/2 bg-green-600 text-white rounded-xl shadow-xl hover:bg-green-700"
