@@ -7,9 +7,9 @@ import { useWeb3Modal } from "@web3modal/ethers5/react";
 // import "simplebar-react/dist/simplebar.min.css"; // Import SimpleBar styles
 import {
   Home,
-  UsersIcon,
-  ChartBarIcon,
-  ChevronDown,
+  // UsersIcon,
+  // ChartBarIcon,
+  // ChevronDown,
   Circle,
   X,
 } from "lucide-react"; // Using Lucide icons
@@ -30,10 +30,10 @@ const Sidebar = ({
   const { open } = useWeb3Modal();
   const { RemoveTokenFromLS } = useAuth();
   const { token: userToken } = useAuth(); // Access token and isAuthenticated from AuthContext
-  const [isTeamDropdownOpen, setTeamDropdownOpen] = useState(false);
-  const [isStakeDropdownOpen, setStakeDropdownOpen] = useState(false);
-  const [isIncomeDropdownOpen, setIncomeDropdownOpen] = useState(false);
-  const [isRewardsDropdownOpen, setRewardsDropdownOpen] = useState(false);
+  // const [isTeamDropdownOpen, setTeamDropdownOpen] = useState(false);
+  // const [isStakeDropdownOpen, setStakeDropdownOpen] = useState(false);
+  // const [isIncomeDropdownOpen, setIncomeDropdownOpen] = useState(false);
+  // const [isRewardsDropdownOpen, setRewardsDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>("");
   const navigate = useNavigate();
@@ -106,30 +106,30 @@ const Sidebar = ({
   //   }
   // };
 
-  const toggleTeamDropdown = () => {
-    setTeamDropdownOpen(!isTeamDropdownOpen);
-    setStakeDropdownOpen(false);
-    setIncomeDropdownOpen(false);
-    setRewardsDropdownOpen(false);
-  };
+  // const toggleTeamDropdown = () => {
+  //   setTeamDropdownOpen(!isTeamDropdownOpen);
+  //   setStakeDropdownOpen(false);
+  //   setIncomeDropdownOpen(false);
+  //   setRewardsDropdownOpen(false);
+  // };
 
-  const toggleStakeDropdown = () => {
-    setStakeDropdownOpen(!isStakeDropdownOpen);
-    setIncomeDropdownOpen(false);
-    setRewardsDropdownOpen(false);
-  };
+  // const toggleStakeDropdown = () => {
+  //   setStakeDropdownOpen(!isStakeDropdownOpen);
+  //   setIncomeDropdownOpen(false);
+  //   setRewardsDropdownOpen(false);
+  // };
 
-  const toggleIncomeDropdown = () => {
-    setIncomeDropdownOpen(!isIncomeDropdownOpen);
-    setStakeDropdownOpen(false);
-    setRewardsDropdownOpen(false);
-  };
+  // const toggleIncomeDropdown = () => {
+  //   setIncomeDropdownOpen(!isIncomeDropdownOpen);
+  //   setStakeDropdownOpen(false);
+  //   setRewardsDropdownOpen(false);
+  // };
 
-  const toggleRewardsDropdown = () => {
-    setRewardsDropdownOpen(!isRewardsDropdownOpen);
-    setStakeDropdownOpen(false);
-    setIncomeDropdownOpen(false);
-  };
+  // const toggleRewardsDropdown = () => {
+  //   setRewardsDropdownOpen(!isRewardsDropdownOpen);
+  //   setStakeDropdownOpen(false);
+  //   setIncomeDropdownOpen(false);
+  // };
 
   //   const handleAvatarClick = (avatar: string) => {
   //     setSelectedAvatar(avatar);
@@ -262,7 +262,7 @@ const Sidebar = ({
           </div>
 
           {/* Team Dropdown */}
-          <div>
+          {/* <div>
             <div
               className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
               onClick={() => {
@@ -298,10 +298,10 @@ const Sidebar = ({
                 ))}
               </ul>
             </div>
-          </div>
+          </div> */}
 
           {/* Stake Dropdown */}
-          <div>
+          {/* <div>
             <div
               className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
               onClick={() => {
@@ -337,10 +337,10 @@ const Sidebar = ({
                 ))}
               </ul>
             </div>
-          </div>
+          </div> */}
 
           {/* Income Dropdown */}
-          <div>
+          {/* <div>
             <div
               className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
               onClick={() => {
@@ -376,10 +376,10 @@ const Sidebar = ({
                 ))}
               </ul>
             </div>
-          </div>
+          </div> */}
 
           {/* Rewards Dropdown */}
-          <div>
+          {/* <div>
             <div
               className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
               onClick={() => {
@@ -415,7 +415,7 @@ const Sidebar = ({
                 ))}
               </ul>
             </div>
-          </div>
+          </div> */}
 
           {/* Log Out Button */}
           <div
