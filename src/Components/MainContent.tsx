@@ -35,6 +35,11 @@ const EcommerceReferralPage = () => {
   // const [userInvestmentTotal, setUserInvestmentTotal] = useState(0); // State for user's total investment
   const [rankReward, setRankReward] = useState(null);
   console.log("rankReward ", rankReward);
+  const [userInvestmentTotal, setUserInvestmentTotal] = useState(null); // User's total investment
+  const [newActiveInvestmentTotal, setNewActiveInvestmentTotal] =
+    useState(null); // New active investment total after the purchase
+  const [liquidityFee, setLiquidityFee] = useState(null); // The liquidity fee (calculated)
+  const [actualInvestment, setActualInvestment] = useState(null); // Actual investment based on the package
 
   // const [userInvestmentTotal, setUserInvestmentTotal] = useState<number | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -537,12 +542,144 @@ const EcommerceReferralPage = () => {
   };
 
   // Handle package purchase
-  const handleBuy = (pkg: {
-    name: string;
-    investment: number;
+  const handleBuy = async (pkg: {
+    name: any;
+    investment: any;
     yield?: number;
   }) => {
-    alert(`You have purchased the ${pkg.name} package for $${pkg.investment}.`);
+    if (!walletProvider || !address) {
+      setError("Please connect your wallet to proceed.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      // Sanitize the amount from the selected package investment
+      const sanitizedAmount = pkg.investment.toString().trim();
+      console.log("Sanitized Amount:", sanitizedAmount); // Log sanitized amount
+
+      // Check if the sanitizedAmount is empty
+      if (sanitizedAmount === "") {
+        alert("Investment amount cannot be empty.");
+        return;
+      }
+
+      // Parse the sanitized amount to a float
+      const numericAmount = parseFloat(sanitizedAmount);
+      console.log("Parsed Numeric Amount:", numericAmount); // Log parsed numeric amount
+
+      // Check if the parsed amount is valid
+      if (isNaN(numericAmount) || numericAmount <= 0) {
+        alert("Invalid investment amount.");
+        return;
+      }
+
+      // Calculate liquidity tax (1% of the amount)
+      const liquidityTax = ethers.utils
+        .parseUnits(sanitizedAmount, 18) // Using 18 decimals for liquidity tax
+        .mul(1)
+        .div(100);
+      console.log("Liquidity Tax:", liquidityTax.toString()); // Log liquidity tax
+
+      // Calculate net amount to transfer after tax (still in smallest token units)
+      const netAmount = ethers.utils
+        .parseUnits(sanitizedAmount, 18) // Using 18 decimals for the net amount
+        .sub(liquidityTax);
+      console.log(
+        "Net Amount to Transfer (18 decimals):",
+        netAmount.toString()
+      ); // Log net amount
+
+      // Initialize provider and signer
+      const provider = new ethers.providers.Web3Provider(walletProvider);
+      const signer = provider.getSigner();
+
+      // ERC-20 contract ABI
+      const tokenAbi = [
+        "function balanceOf(address owner) public view returns (uint256)",
+        "function approve(address spender, uint256 amount) public returns (bool)",
+        "function transfer(address to, uint256 amount) public returns (bool)",
+      ];
+
+      const tokenContract = new ethers.Contract(tokenAddress, tokenAbi, signer);
+
+      // Log the token contract to verify the methods available
+      console.log("Token Contract:", tokenContract);
+
+      // Check if balanceOf function exists
+      if (!tokenContract.balanceOf) {
+        console.error("balanceOf method not found on token contract");
+        alert("Error: balanceOf method not available on token contract.");
+        return;
+      }
+
+      // Fetch balance of the user
+      const balance = await tokenContract.balanceOf(address);
+      console.log("User Balance:", ethers.utils.formatUnits(balance, 18)); // Log the balance
+
+      // Check if the user has enough balance
+      if (balance.lt(netAmount)) {
+        alert("Insufficient balance.");
+        return;
+      }
+
+      // Approve the investment address to spend the tokens
+      console.log("Approving transaction...");
+      const approveTx = await tokenContract.approve(
+        investmentAddress,
+        netAmount
+      );
+      console.log("Approve Transaction:", approveTx.hash);
+      await approveTx.wait(); // Wait for approval to complete
+
+      // Transfer the net amount to the investment address
+      console.log("Transferring investment...");
+      const transferTx = await tokenContract.transfer(
+        investmentAddress,
+        netAmount
+      );
+      console.log("Transfer Transaction:", transferTx.hash);
+      await transferTx.wait(); // Wait for the transfer to complete
+
+      alert(`Investment successful! Amount invested: ${sanitizedAmount}`);
+      alert(`Investment successful! Transaction hash: ${transferTx.hash}`);
+
+      // Make the backend API call to register the investment
+      const response = await fetch(
+        "http://localhost:3000/api/investments/buy-yield-package",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount: pkg.investment, // Send the selected package investment amount
+            packageType: pkg.name, // Send the selected package name
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Investment failed.");
+      }
+
+      // Update the investment totals based on the backend response
+      setNewActiveInvestmentTotal(data.newActiveInvestmentTotal);
+      setLiquidityFee(data.liquidityFee);
+      setActualInvestment(data.actualInvestment);
+      setUserInvestmentTotal(data.userInvestmentTotal); // Update the total investment
+      setLoading(false);
+    } catch (error: any) {
+      setError(
+        error.message || "An error occurred while processing the investment."
+      );
+      setLoading(false);
+    }
   };
 
   return (
@@ -747,6 +884,13 @@ const EcommerceReferralPage = () => {
             <h2 className="text-3xl font-bold text-center mb-5 text-gray-800 dark:text-gray-200">
               Yield Packages
             </h2>
+
+            {/* {error && (
+              <div className="bg-red-500 text-white p-3 rounded-md mb-4 text-center">
+                <strong>Error: </strong> {error}
+              </div>
+            )} */}
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {yieldPackages.map((pkg, index) => (
                 <div
@@ -770,16 +914,34 @@ const EcommerceReferralPage = () => {
                     onClick={() => handleBuy(pkg)}
                     className="mt-4 w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 transition duration-200 relative z-10"
                   >
-                    Buy Now
+                    {loading ? "Processing..." : "Buy Now"}
                   </button>
                 </div>
               ))}
             </div>
+
             <div className="mt-5 text-center">
               <p className="text-sm text-gray-500 dark:text-gray-400">
                 All incentives available at initiation only.
               </p>
             </div>
+
+            {userInvestmentTotal !== null && (
+              <div className="mt-6 text-center">
+                <p className="text-lg text-gray-800 dark:text-gray-200">
+                  Your Total Investment: ${userInvestmentTotal}
+                </p>
+                <p className="text-lg text-gray-800 dark:text-gray-200">
+                  New Active Investment Total: ${newActiveInvestmentTotal}
+                </p>
+                <p className="text-lg text-gray-800 dark:text-gray-200">
+                  Liquidity Fee: ${liquidityFee}
+                </p>
+                <p className="text-lg text-gray-800 dark:text-gray-200">
+                  Actual Investment: ${actualInvestment}
+                </p>
+              </div>
+            )}
           </div>
         </main>
       </div>
