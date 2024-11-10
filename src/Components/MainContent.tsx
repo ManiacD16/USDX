@@ -10,13 +10,13 @@ import {
   Currency,
   Crown,
   Wallet,
+  BellMinus,
 } from "lucide-react";
 import Sidebar from "./sidebar";
 import Header from "./header";
 import "../App.css";
 import { ethers } from "ethers";
 import {
-  useWeb3Modal,
   useWeb3ModalAccount,
   useWeb3ModalProvider,
 } from "@web3modal/ethers5/react";
@@ -32,6 +32,7 @@ const EcommerceReferralPage = () => {
   const [dailyROI, setDailyROI] = useState<number | null>(null);
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [balance, setBalance] = useState(null);
+  const [yieldbalance, setyieldBalance] = useState(null);
   // const [userInvestmentTotal, setUserInvestmentTotal] = useState(0); // State for user's total investment
   const [rankReward, setRankReward] = useState(null);
   console.log("rankReward ", rankReward);
@@ -237,6 +238,38 @@ const EcommerceReferralPage = () => {
     getUserBalance();
   }, []); // Empty dependency array ensures this runs only once on component mount
 
+  useEffect(() => {
+    const getyieldBalance = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/api/investments/yield-balance",
+          {
+            method: "GET",
+
+            headers: {
+              Authorization: `Bearer ${userToken}`, // Assume token is stored in localStorage
+              "Content-Type": "application/json",
+            },
+            credentials: "include", // Make sure cookies are included with the request
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(response.statusText || "Invalid Credentials");
+        }
+
+        const data = await response.json();
+        setyieldBalance(data.balance);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getyieldBalance();
+  }, []); // Empty dependency array ensures this runs only once on component mount
+
   // useEffect(() => {
   //   async function getUserRank() {
   //     try {
@@ -392,14 +425,14 @@ const EcommerceReferralPage = () => {
       return;
     }
 
-    try {
-      // Ensure the user provides a withdrawal amount and has a valid address
-      if (!withdrawAmount || parseInt(withdrawAmount) <= 0) {
-        alert("Please enter a valid withdrawal amount.");
-        return;
-      }
+    // Validate withdrawal amount
+    if (!withdrawAmount || parseInt(withdrawAmount) <= 0) {
+      alert("Please enter a valid withdrawal amount.");
+      return;
+    }
 
-      // Call the backend to initiate the withdrawal
+    try {
+      // Call the backend to initiate the withdrawal with the withdrawal type
       const response = await fetch(
         "http://localhost:3000/api/investments/withdraw",
         {
@@ -410,7 +443,8 @@ const EcommerceReferralPage = () => {
           },
           body: JSON.stringify({
             amount: withdrawAmount,
-            userAddress: address, // Assuming address is the user's wallet address
+            userAddress: address, // user's wallet address
+            key: withdrawType, // send withdraw type (invest_withdraw or yield_withdraw)
           }),
         }
       );
@@ -422,7 +456,7 @@ const EcommerceReferralPage = () => {
 
       const data = await response.json();
 
-      // If withdrawal is successful, display a success message
+      // If withdrawal is successful, display success message
       if (data.success) {
         alert(`Withdrawal successful! New balance: $${data.balance}`);
         setWithdrawAmount(""); // Reset the withdraw amount input field
@@ -823,6 +857,19 @@ const EcommerceReferralPage = () => {
               <Currency className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
             </div>
 
+            {/* Balance Box */}
+            <div className="p-6 border border-blue-400 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex justify-between items-center mb-6">
+              <div>
+                <h2 className="text-lg md:text-2xl font-semibold">
+                  Yield Balance
+                </h2>
+                <p className="md:text-lg text-2xl font-bold text-green-600">
+                  ${yieldbalance}
+                </p>
+              </div>
+              <BellMinus className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
+            </div>
+
             {/* Deposit Box */}
             <div className="p-6 bg-gradient-to-r from-blue-200 to-blue-400 rounded-2xl shadow-2xl dark:from-blue-900 dark:to-blue-400 flex flex-col md:flex-row justify-between items-center mb-6 border border-blue-400">
               <div className="w-full">
@@ -830,7 +877,7 @@ const EcommerceReferralPage = () => {
                   <h2 className="text-lg md:text-2xl font-semibold">
                     Deposit{" "}
                     <span className="ml-0 md:ml-4 mb-2 text-sm text-gray-600 dark:text-gray-300">
-                      Minimum: $50 | Maximum: $10,000
+                      Minimum: $100 | Maximum: $25,000
                     </span>
                   </h2>
                   <PiggyBank className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
@@ -862,6 +909,7 @@ const EcommerceReferralPage = () => {
                   </h2>
                   <HandCoins className="w-6 h-6 md:w-8 md:h-8 icon font-bold" />
                 </div>
+
                 <div className="flex flex-col mt-6 md:flex-row">
                   {/* Dropdown for withdrawal type */}
                   <select
@@ -879,7 +927,7 @@ const EcommerceReferralPage = () => {
                     value={withdrawAmount}
                     onChange={(e) => setWithdrawAmount(e.target.value)}
                     placeholder="Enter amount to withdraw"
-                    className="border p-2 rounded-xl w-full md:w-1/2 mr-0 md:mr-2 shadow-xl"
+                    className="border p-2 rounded-xl w-full md:w-1/2 mr-0 md:mr-2 shadow-xl mt-2 md:mt-0"
                   />
 
                   {/* Withdraw button */}
