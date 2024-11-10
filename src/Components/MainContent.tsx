@@ -61,8 +61,8 @@ const EcommerceReferralPage = () => {
   // const [totalIncome, setTotalIncome] = useState(0);
   // const [totalDeposit, setTotalDeposit] = useState(0);
   // const [levelIncome, setLevelIncome] = useState(0);
-  const [error, setError] = useState<string | null>(null);
-  const [roiData, setRoiData] = useState(null);
+  // const [error, setError] = useState<string | null>(null);
+  // const [roiData, setRoiData] = useState(null);
   const [totalROI, setTotalROI] = useState(0); // State to store total ROI
   const { walletProvider } = useWeb3ModalProvider();
   const { address } = useWeb3ModalAccount();
@@ -229,7 +229,7 @@ const EcommerceReferralPage = () => {
         const data = await response.json();
         setBalance(data.balance);
       } catch (error: any) {
-        setError(error.message);
+        console.log(error.message);
       } finally {
         setLoading(false);
       }
@@ -261,7 +261,7 @@ const EcommerceReferralPage = () => {
         const data = await response.json();
         setyieldBalance(data.balance);
       } catch (error: any) {
-        setError(error.message);
+        console.log(error.message);
       } finally {
         setLoading(false);
       }
@@ -291,11 +291,11 @@ const EcommerceReferralPage = () => {
   //         setRank(data.rank); // Update state with the rank
   //       } else {
   //         const errorData = await response.json();
-  //         setError(errorData.error); // Set error state if the request fails
+  //         consol.log(errorData.error); // Set error state if the request fails
   //       }
   //     } catch (error) {
   //       console.error("Error:", error);
-  //       setError("Failed to fetch user rank");
+  //       console.log("Failed to fetch user rank");
   //     } finally {
   //       setLoading(false); // Stop loading once the request is completed
   //     }
@@ -324,7 +324,7 @@ const EcommerceReferralPage = () => {
         const data = await response.json();
 
         if (response.ok) {
-          setRoiData(data); // Set the ROI data from the response
+          // setRoiData(data); // Set the ROI data from the response
 
           // Calculate the total ROI (you can modify this logic as needed)
           const total =
@@ -335,10 +335,10 @@ const EcommerceReferralPage = () => {
             );
           setTotalROI(total); // Set the total ROI including user and referral investments
         } else {
-          setError(data.error); // Handle errors from backend
+          console.error(data.error); // Handle errors from backend
         }
       } catch (error: any) {
-        setError("Network error: " + error.message); // Handle network errors
+        console.log("Network error: " + error.message); // Handle network errors
       } finally {
         setLoading(false); // Stop loading when the data is fetched or an error occurs
       }
@@ -523,7 +523,7 @@ const EcommerceReferralPage = () => {
   //     }
   //   } catch (error) {
   //     console.error('Invest error:', error);
-  //     setError('Failed to invest');
+  //     console.log('Failed to invest');
   //   }
   // };
 
@@ -583,12 +583,12 @@ const EcommerceReferralPage = () => {
     yield?: number;
   }) => {
     if (!walletProvider || !address) {
-      setError("Please connect your wallet to proceed.");
+      console.log("Please connect your wallet to proceed.");
       return;
     }
 
     setLoading(true);
-    setError(null);
+    console.log(null);
 
     try {
       // Sanitize the amount from the selected package investment
@@ -710,7 +710,7 @@ const EcommerceReferralPage = () => {
       setUserInvestmentTotal(data.userInvestmentTotal); // Update the total investment
       setLoading(false);
     } catch (error: any) {
-      setError(
+      console.log(
         error.message || "An error occurred while processing the investment."
       );
       setLoading(false);

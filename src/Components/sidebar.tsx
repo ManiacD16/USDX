@@ -20,6 +20,7 @@ import { useAuth } from "../AuthContext"; // Import AuthContext
 // import Avatar3 from "./Images/Avatar1.jpg";
 // import Avatar4 from "./Images/Avatar2.jpg";
 // const avatars = [Avatar1, Avatar2, Avatar3, Avatar4];
+import Preloader from "./Preloader.tsx"; // Import the Preloader component
 
 const Sidebar = ({
   setIsSidebarOpen,
@@ -28,15 +29,12 @@ const Sidebar = ({
 }) => {
   const { open } = useWeb3Modal();
   const { RemoveTokenFromLS } = useAuth();
-  const { isAuthenticated, token: userToken } = useAuth(); // Access token and isAuthenticated from AuthContext
+  const { token: userToken } = useAuth(); // Access token and isAuthenticated from AuthContext
   const [isTeamDropdownOpen, setTeamDropdownOpen] = useState(false);
   const [isStakeDropdownOpen, setStakeDropdownOpen] = useState(false);
   const [isIncomeDropdownOpen, setIncomeDropdownOpen] = useState(false);
   const [isRewardsDropdownOpen, setRewardsDropdownOpen] = useState(false);
-  const [password, setPassword] = useState("");
-  const [confirmMessage, setConfirmMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(null);
   const [error, setError] = useState<string | null>("");
   const navigate = useNavigate();
   const [rank, setRank] = useState(null); // Initial state for the user's rank
@@ -199,6 +197,7 @@ const Sidebar = ({
   return (
     <div className="min-h-screen w-64 bg-gradient-to-r from-blue-200 to-blue-400 shadow-2xl dark:from-blue-900 dark:to-blue-400">
       {/* <SimpleBar style={{ maxHeight: "100vh" }}> */}
+
       <div
         className="p-6 flex justify-between items-center"
         style={{ maxHeight: "100vh" }}
@@ -246,185 +245,192 @@ const Sidebar = ({
           <X className="w-6 h-6" />
         </button>
       </div>
-
-      <nav className="mt-0 ml-4 mr-4">
-        <div
-          className="flex items-center justify-between p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
-          onClick={() => navigate("/user")}
-        >
-          <div className="flex items-center space-x-3">
-            <Home className="h-5 w-5 text-gray-500 dark:text-slate-300" />
-            <span className="text-gray-500 dark:text-slate-300 hover:text-gray-200">
-              Dashboards
-            </span>
-          </div>
-        </div>
-
-        {/* Team Dropdown */}
-        <div>
+      {loading ? ( // Render the preloader if loading
+        <Preloader />
+      ) : (
+        <nav className="mt-0 ml-4 mr-4">
           <div
-            className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
-            onClick={() => {
-              toggleTeamDropdown(); // Call your dropdown toggle function
-              navigate("/team"); // Navigate to team.js
-            }}
+            className="flex items-center justify-between p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
+            onClick={() => navigate("/user")}
           >
-            <UsersIcon className="h-5 w-5 text-gray-500 dark:text-slate-300" />
-            <span className="ml-3 text-gray-500 dark:text-slate-300 hover:text-gray-200 flex-grow">
-              Team
-            </span>
-            <ChevronDown
-              className={`h-5 w-5 dark:text-gray-200 text-gray-500 transition-transform duration-300 ease-in-out transform ${
-                isTeamDropdownOpen ? "rotate-0" : "-rotate-90"
+            <div className="flex items-center space-x-3">
+              <Home className="h-5 w-5 text-gray-500 dark:text-slate-300" />
+              <span className="text-gray-500 dark:text-slate-300 hover:text-gray-200">
+                Dashboards
+              </span>
+            </div>
+          </div>
+
+          {/* Team Dropdown */}
+          <div>
+            <div
+              className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
+              onClick={() => {
+                toggleTeamDropdown(); // Call your dropdown toggle function
+                navigate("/team"); // Navigate to team.js
+              }}
+            >
+              <UsersIcon className="h-5 w-5 text-gray-500 dark:text-slate-300" />
+              <span className="ml-3 text-gray-500 dark:text-slate-300 hover:text-gray-200 flex-grow">
+                Team
+              </span>
+              <ChevronDown
+                className={`h-5 w-5 dark:text-gray-200 text-gray-500 transition-transform duration-300 ease-in-out transform ${
+                  isTeamDropdownOpen ? "rotate-0" : "-rotate-90"
+                }`}
+              />
+            </div>
+            <div
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                isTeamDropdownOpen
+                  ? "max-h-64 opacity-100"
+                  : "max-h-0 opacity-0"
               }`}
-            />
+            >
+              <ul className="text-m mt-2 space-y-4 ml-4">
+                {["My Directs", "Total Team"].map((item) => (
+                  <li key={item} className="flex items-center space-x-2">
+                    <Circle className="h-3 w-3 text-gray-500 dark:text-gray-200" />
+                    <span className="text-gray-700 dark:text-gray-200">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div
-            className={`overflow-hidden transition-all duration-300 ease-in-out ${
-              isTeamDropdownOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
-            }`}
-          >
-            <ul className="text-m mt-2 space-y-4 ml-4">
-              {["My Directs", "Total Team"].map((item) => (
-                <li key={item} className="flex items-center space-x-2">
-                  <Circle className="h-3 w-3 text-gray-500 dark:text-gray-200" />
-                  <span className="text-gray-700 dark:text-gray-200">
-                    {item}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
 
-        {/* Stake Dropdown */}
-        <div>
-          <div
-            className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
-            onClick={() => {
-              toggleStakeDropdown(); // Call your dropdown toggle function
-              navigate("/stake"); // Navigate to team.js
-            }}
-          >
-            <ChartBarIcon className="h-5 w-5 text-gray-500 dark:text-slate-300" />
-            <span className="ml-3 text-gray-500 dark:text-slate-300 hover:text-gray-200 flex-grow">
-              Stake
-            </span>
-            <ChevronDown
-              className={`h-5 w-5 dark:text-gray-200 text-gray-500 transition-transform duration-300 ease-in-out transform ${
-                isStakeDropdownOpen ? "rotate-0" : "-rotate-90"
+          {/* Stake Dropdown */}
+          <div>
+            <div
+              className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
+              onClick={() => {
+                toggleStakeDropdown(); // Call your dropdown toggle function
+                navigate("/stake"); // Navigate to team.js
+              }}
+            >
+              <ChartBarIcon className="h-5 w-5 text-gray-500 dark:text-slate-300" />
+              <span className="ml-3 text-gray-500 dark:text-slate-300 hover:text-gray-200 flex-grow">
+                Stake
+              </span>
+              <ChevronDown
+                className={`h-5 w-5 dark:text-gray-200 text-gray-500 transition-transform duration-300 ease-in-out transform ${
+                  isStakeDropdownOpen ? "rotate-0" : "-rotate-90"
+                }`}
+              />
+            </div>
+            <div
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                isStakeDropdownOpen
+                  ? "max-h-64 opacity-100"
+                  : "max-h-0 opacity-0"
               }`}
-            />
+            >
+              <ul className="text-m mt-2 space-y-4 ml-4">
+                {["Stake", "Affiliate Stake"].map((item) => (
+                  <li key={item} className="flex items-center space-x-2">
+                    <Circle className="h-3 w-3 text-gray-500 dark:text-gray-200" />
+                    <span className="text-gray-700 dark:text-gray-200">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div
-            className={`overflow-hidden transition-all duration-300 ease-in-out ${
-              isStakeDropdownOpen ? "max-h-64 opacity-100" : "max-h-0 opacity-0"
-            }`}
-          >
-            <ul className="text-m mt-2 space-y-4 ml-4">
-              {["Stake", "Affiliate Stake"].map((item) => (
-                <li key={item} className="flex items-center space-x-2">
-                  <Circle className="h-3 w-3 text-gray-500 dark:text-gray-200" />
-                  <span className="text-gray-700 dark:text-gray-200">
-                    {item}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
 
-        {/* Income Dropdown */}
-        <div>
-          <div
-            className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
-            onClick={() => {
-              toggleIncomeDropdown(); // Call your dropdown toggle function
-              navigate("/income"); // Navigate to team.js
-            }}
-          >
-            <ChartBarIcon className="h-5 w-5 text-gray-500 dark:text-slate-300" />
-            <span className="ml-3 text-gray-500 dark:text-slate-300 hover:text-gray-200 flex-grow">
-              Income
-            </span>
-            <ChevronDown
-              className={`h-5 w-5 dark:text-gray-200 text-gray-500 transition-transform duration-300 ease-in-out transform ${
-                isIncomeDropdownOpen ? "rotate-0" : "-rotate-90"
+          {/* Income Dropdown */}
+          <div>
+            <div
+              className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
+              onClick={() => {
+                toggleIncomeDropdown(); // Call your dropdown toggle function
+                navigate("/income"); // Navigate to team.js
+              }}
+            >
+              <ChartBarIcon className="h-5 w-5 text-gray-500 dark:text-slate-300" />
+              <span className="ml-3 text-gray-500 dark:text-slate-300 hover:text-gray-200 flex-grow">
+                Income
+              </span>
+              <ChevronDown
+                className={`h-5 w-5 dark:text-gray-200 text-gray-500 transition-transform duration-300 ease-in-out transform ${
+                  isIncomeDropdownOpen ? "rotate-0" : "-rotate-90"
+                }`}
+              />
+            </div>
+            <div
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                isIncomeDropdownOpen
+                  ? "max-h-64 opacity-100"
+                  : "max-h-0 opacity-0"
               }`}
-            />
+            >
+              <ul className="text-m mt-2 space-y-4 ml-4">
+                {["Direct Income", "Level Income"].map((item) => (
+                  <li key={item} className="flex items-center space-x-2">
+                    <Circle className="h-3 w-3 text-gray-500 dark:text-gray-200" />
+                    <span className="text-gray-700 dark:text-gray-200">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div
-            className={`overflow-hidden transition-all duration-300 ease-in-out ${
-              isIncomeDropdownOpen
-                ? "max-h-64 opacity-100"
-                : "max-h-0 opacity-0"
-            }`}
-          >
-            <ul className="text-m mt-2 space-y-4 ml-4">
-              {["Direct Income", "Level Income"].map((item) => (
-                <li key={item} className="flex items-center space-x-2">
-                  <Circle className="h-3 w-3 text-gray-500 dark:text-gray-200" />
-                  <span className="text-gray-700 dark:text-gray-200">
-                    {item}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
 
-        {/* Rewards Dropdown */}
-        <div>
-          <div
-            className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
-            onClick={() => {
-              toggleRewardsDropdown(); // Call your dropdown toggle function
-              navigate("/rewards"); // Navigate to team.js
-            }}
-          >
-            <ChartBarIcon className="h-5 w-5 text-gray-500 dark:text-slate-300" />
-            <span className="ml-3 text-gray-500 dark:text-slate-300 hover:text-gray-200 flex-grow">
-              Rewards
-            </span>
-            <ChevronDown
-              className={`h-5 w-5 dark:text-gray-200 text-gray-500 transition-transform duration-300 ease-in-out transform ${
-                isRewardsDropdownOpen ? "rotate-0" : "-rotate-90"
+          {/* Rewards Dropdown */}
+          <div>
+            <div
+              className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
+              onClick={() => {
+                toggleRewardsDropdown(); // Call your dropdown toggle function
+                navigate("/rewards"); // Navigate to team.js
+              }}
+            >
+              <ChartBarIcon className="h-5 w-5 text-gray-500 dark:text-slate-300" />
+              <span className="ml-3 text-gray-500 dark:text-slate-300 hover:text-gray-200 flex-grow">
+                Rewards
+              </span>
+              <ChevronDown
+                className={`h-5 w-5 dark:text-gray-200 text-gray-500 transition-transform duration-300 ease-in-out transform ${
+                  isRewardsDropdownOpen ? "rotate-0" : "-rotate-90"
+                }`}
+              />
+            </div>
+            <div
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${
+                isRewardsDropdownOpen
+                  ? "max-h-64 opacity-100"
+                  : "max-h-0 opacity-0"
               }`}
-            />
+            >
+              <ul className="text-m mt-2 space-y-4 ml-4">
+                {["Weekly Rewards", "Royalty Rewards"].map((item) => (
+                  <li key={item} className="flex items-center space-x-2">
+                    <Circle className="h-3 w-3 text-gray-500 dark:text-gray-200" />
+                    <span className="text-gray-700 dark:text-gray-200">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-          <div
-            className={`overflow-hidden transition-all duration-300 ease-in-out ${
-              isRewardsDropdownOpen
-                ? "max-h-64 opacity-100"
-                : "max-h-0 opacity-0"
-            }`}
-          >
-            <ul className="text-m mt-2 space-y-4 ml-4">
-              {["Weekly Rewards", "Royalty Rewards"].map((item) => (
-                <li key={item} className="flex items-center space-x-2">
-                  <Circle className="h-3 w-3 text-gray-500 dark:text-gray-200" />
-                  <span className="text-gray-700 dark:text-gray-200">
-                    {item}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
 
-        {/* Log Out Button */}
-        <div
-          className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer mt-4"
-          onClick={handleClick}
-        >
-          {error && <p className="text-red-500 mb-4">{error}</p>}{" "}
-          {/* Display error message */}
-          <Circle className="h-3 w-3 text-gray-500 dark:text-gray-200" />
-          <span className="ml-3 text-gray-500 dark:text-slate-300">
-            Log Out
-          </span>
-        </div>
-      </nav>
+          {/* Log Out Button */}
+          <div
+            className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer mt-4"
+            onClick={handleClick}
+          >
+            {error && <p className="text-red-500 mb-4">{error}</p>}{" "}
+            {/* Display error message */}
+            <Circle className="h-3 w-3 text-gray-500 dark:text-gray-200" />
+            <span className="ml-3 text-gray-500 dark:text-slate-300">
+              Log Out
+            </span>
+          </div>
+        </nav>
+      )}
       {/* </SimpleBar> */}
     </div>
   );
