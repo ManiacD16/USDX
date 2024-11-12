@@ -5,7 +5,7 @@ import { AuthProvider } from "./AuthContext";
 import { createWeb3Modal, defaultConfig } from "@web3modal/ethers5/react";
 
 // 1. Your WalletConnect Cloud project ID
-const projectId = "99b8bb8de0a44e889b511ffeb2fbf79a";
+const projectId = "224382cc5c46b1c10cdecbd4059dff6e";
 
 // 2. Set chains (use BSC Testnet here)
 const testnet = {
@@ -18,9 +18,9 @@ const testnet = {
 
 // 3. Create a metadata object
 const metadata = {
-  name: "BULL BTC",
-  description: "BULL BTC",
-  url: "https://bullbtc.live", // origin must match your domain & subdomain
+  name: "TMC",
+  description: "TMC",
+  url: "https://tmc.live/#/", // origin must match your domain & subdomain
   icons: ["./apple-touch-icon.png"],
 };
 

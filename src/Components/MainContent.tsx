@@ -44,7 +44,7 @@ const EcommerceReferralPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   // const [investAmount, setInvestAmount] = useState("");
   const [inviteLink, setInviteLink] = useState(
-    "http://localhost:5173/#/register?referralAddress=undefined"
+    "https://tmc.live/#/register?referralAddress=undefined"
   );
 
   const yieldPackages = [
@@ -168,7 +168,7 @@ const EcommerceReferralPage = () => {
 
       // Send the **normal amount** to backend (without 18 decimals)
       const response = await fetch(
-        "http://localhost:3000/api/investments/invest",
+        "https://tmc-phi.vercel.app/api/investments/invest",
         {
           method: "POST",
           headers: {
@@ -197,9 +197,7 @@ const EcommerceReferralPage = () => {
   useEffect(() => {
     // When the address changes or is available, update the invite link dynamically
     if (address) {
-      setInviteLink(
-        `http://localhost:5173/#/register?referralAddress=${address}`
-      );
+      setInviteLink(`https://tmc.live/#/register?referralAddress=${address}`);
     }
   }, [address]); // Re-run when address changes
 
@@ -207,7 +205,7 @@ const EcommerceReferralPage = () => {
     const getUserBalance = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/investments/balance",
+          "https://tmc-phi.vercel.app/api/investments/balance",
           {
             method: "GET",
 
@@ -239,7 +237,7 @@ const EcommerceReferralPage = () => {
     const getyieldBalance = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/investments/yield-balance",
+          "https://tmc-phi.vercel.app/api/investments/yield-balance",
           {
             method: "GET",
 
@@ -272,7 +270,7 @@ const EcommerceReferralPage = () => {
   //     try {
   //       // Send a GET request to the backend to get the user's rank
   //       const response = await fetch(
-  //         "http://localhost:3000/api/investments/determineRank",
+  //         "https://tmc-phi.vercel.app/api/investments/determineRank",
   //         {
   //           method: "GET",
   //           headers: {
@@ -309,7 +307,7 @@ const EcommerceReferralPage = () => {
     const calculateROI = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/investments/calculate-level-roi",
+          "https://tmc-phi.vercel.app/api/investments/calculate-level-roi",
           {
             method: "GET",
             headers: {
@@ -350,7 +348,7 @@ const EcommerceReferralPage = () => {
   const fetchInvestmentTotal = async () => {
     try {
       const response = await fetch(
-        "http://localhost:3000/api/investments/total-investment",
+        "https://tmc-phi.vercel.app/api/investments/total-investment",
         {
           method: "GET",
           headers: {
@@ -384,7 +382,7 @@ const EcommerceReferralPage = () => {
     try {
       console.log("Fetching daily ROI...");
       const response = await fetch(
-        "http://localhost:3000/api/investments/daily-roi",
+        "https://tmc-phi.vercel.app/api/investments/daily-roi",
         {
           method: "GET",
           headers: {
@@ -422,16 +420,14 @@ const EcommerceReferralPage = () => {
       return;
     }
 
-    // Validate withdrawal amount
     if (!withdrawAmount || parseInt(withdrawAmount) <= 0) {
       alert("Please enter a valid withdrawal amount.");
       return;
     }
 
     try {
-      // Call the backend to initiate the withdrawal with the withdrawal type
       const response = await fetch(
-        "http://localhost:3000/api/investments/withdraw",
+        "https://tmc-phi.vercel.app/api/investments/withdraw",
         {
           method: "POST",
           headers: {
@@ -440,23 +436,22 @@ const EcommerceReferralPage = () => {
           },
           body: JSON.stringify({
             amount: withdrawAmount,
-            userAddress: address, // user's wallet address
-            key: withdrawType, // send withdraw type (invest_withdraw or yield_withdraw)
+            userAddress: address,
+            key: withdrawType,
           }),
         }
       );
 
-      // Handle response from the backend
       if (!response.ok) {
         throw new Error("Failed to withdraw");
       }
 
       const data = await response.json();
 
-      // If withdrawal is successful, display success message
       if (data.success) {
-        alert(`Withdrawal successful! New balance: $${data.balance}`);
-        setWithdrawAmount(""); // Reset the withdraw amount input field
+        alert(`Withdrawal initiated! Your new balance will be updated soon.`);
+        // Optionally show a loading indicator or redirect the user
+        // You can fetch the updated balance here or use WebSockets to notify the user when the transaction is complete.
       } else {
         alert(data.error || "Withdrawal failed.");
       }
@@ -481,7 +476,7 @@ const EcommerceReferralPage = () => {
   //     }
 
   //     // Send investment request to backend
-  //     const response = await fetch('http://localhost:3000/api/investments/invest', {
+  //     const response = await fetch('https://tmc-phi.vercel.app/api/investments/invest', {
   //       method: 'POST',
   //       headers: {
   //         'Authorization': `Bearer ${userToken}`,
@@ -527,7 +522,7 @@ const EcommerceReferralPage = () => {
   const fetchRankReward = async (): Promise<any> => {
     try {
       const response = await fetch(
-        "http://localhost:3000/api/investments/rank-reward",
+        "https://tmc-phi.vercel.app/api/investments/rank-reward",
         {
           method: "GET",
           headers: {
@@ -680,7 +675,7 @@ const EcommerceReferralPage = () => {
 
       // Make the backend API call to register the investment
       const response = await fetch(
-        "http://localhost:3000/api/investments/buy-yield-package",
+        "https://tmc-phi.vercel.app/api/investments/buy-yield-package",
         {
           method: "POST",
           headers: {
@@ -693,7 +688,7 @@ const EcommerceReferralPage = () => {
           }),
         }
       );
-
+      window.location.reload();
       const data = await response.json();
 
       if (!response.ok) {

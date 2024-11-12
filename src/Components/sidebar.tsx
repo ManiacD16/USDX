@@ -47,28 +47,14 @@ const Sidebar = ({
 
   const handleLogout = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/auth/logout", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // Ensure cookies are included
-      });
+      // Clear the token from localStorage using the auth context
+      RemoveTokenFromLS();
 
-      if (res.ok) {
-        // Clear the token from localStorage using the auth context
-        RemoveTokenFromLS();
+      // Update the user state to logged out
+      dispatch({ type: "USER", payload: false });
 
-        // Update the user state to logged out
-        dispatch({ type: "USER", payload: false });
-
-        // Navigate to the login page
-        navigate("/login", { replace: true });
-      } else {
-        const errorData = await res.json();
-        alert(errorData.message || "Logout failed. Please try again.");
-      }
+      // Navigate to the login page
+      navigate("/login", { replace: true });
     } catch (err) {
       console.log("Logout error:", err);
       alert("An error occurred while logging out. Please try again.");
@@ -81,7 +67,7 @@ const Sidebar = ({
   //     setError(null); // Reset any previous error
   //     setMessage(null); // Reset any previous message
 
-  //     const response = await fetch("http://localhost:3000/api/auth/delete", {
+  //     const response = await fetch("https://tmc-phi.vercel.app/api/auth/delete", {
   //       method: "DELETE",
   //       headers: {
   //         Authorization: `Bearer ${localStorage.getItem("userToken")}`,
@@ -159,7 +145,7 @@ const Sidebar = ({
       try {
         // Send a GET request to the backend to get the user's rank
         const response = await fetch(
-          "http://localhost:3000/api/investments/determineRank",
+          "https://tmc-phi.vercel.app/api/investments/determineRank",
           {
             method: "GET",
             headers: {

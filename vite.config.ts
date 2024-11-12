@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3000', // Your backend server
+        target: 'https://tmc-phi.vercel.app', // Your backend server
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''), // Optional: rewrite path if needed
       },
