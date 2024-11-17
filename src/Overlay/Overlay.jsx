@@ -367,19 +367,18 @@ export default function Overlay() {
                     {/* Dashed line connecting the milestones */}
                     <div className="absolute left-8 top-8 bottom-0 w-0.5 bg-gray-200 border-dashed border-l-2 border-gray-200" />
                     <div className="relative flex items-start gap-4 pb-12">
-                      {/* Number and Icon */}
-                      <div className="relative z-10">
-                        <div
-                          className={`bg-red-400 rounded-full w-20 h-20 flex items-center justify-center shadow-lg`}>
-                          <Rocket className="w-12 h-12 text-white" />
-                        </div>
-                      </div>
-
                       {/* Content */}
                       <div className="flex-1 pt-2">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-4xl font-bold text-gray-300">Q1</span>
-                          <h3 className="text-xl font-semibold">Immediate Launch</h3>
+                          <h2 className="text-4xl font-bold text-gray-300">Q1</h2>
+                          {/* Number and Icon */}
+                          <div className="relative z-10">
+                            <div
+                              className={`bg-red-400 rounded-full w-20 h-20 flex items-center justify-center shadow-lg`}>
+                              <Rocket className="w-60 h-60 text-white" />
+                            </div>
+                          </div>
+                          <h1 className="text-xl font-semibold">Immediate Launch</h1>
                         </div>
 
                         {/* List of Description Points */}
@@ -408,18 +407,17 @@ export default function Overlay() {
                     {/* Dashed line connecting the milestones */}
                     <div className="absolute left-8 top-8 bottom-0 w-0.5 bg-gray-200 border-dashed border-l-2 border-gray-200" />
                     <div className="relative flex items-start gap-4 pb-12">
-                      {/* Number and Icon */}
-                      <div className="relative z-10">
-                        <div
-                          className={`bg-red-400 rounded-full w-20 h-20 flex items-center justify-center shadow-lg`}>
-                          <Handshake className="w-12 h-12 text-white" />
-                        </div>
-                      </div>
-
                       {/* Content */}
                       <div className="flex-1 pt-2">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-4xl font-bold text-gray-300">Q2</span>
+                          <h2 className="text-4xl font-bold text-gray-300">Q2</h2>
+                          {/* Number and Icon */}
+                          <div className="relative z-10">
+                            <div
+                              className={`bg-red-400 rounded-full w-20 h-20 flex items-center justify-center shadow-lg`}>
+                              <Handshake className="w-12 h-12 text-white" />
+                            </div>
+                          </div>
                           <h3 className="text-xl font-semibold">
                             Strategic Partnerships & Mass Adoption
                           </h3>
@@ -455,18 +453,17 @@ export default function Overlay() {
                     {/* Dashed line connecting the milestones */}
                     <div className="absolute left-8 top-8 bottom-0 w-0.5 bg-gray-200 border-dashed border-l-2 border-gray-200" />
                     <div className="relative flex items-start gap-4 pb-12">
-                      {/* Number and Icon */}
-                      <div className="relative z-10">
-                        <div
-                          className={`bg-red-400 rounded-full w-20 h-20 flex items-center justify-center shadow-lg`}>
-                          <Earth className="w-12 h-12 text-white" />
-                        </div>
-                      </div>
-
                       {/* Content */}
                       <div className="flex-1 pt-2">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-4xl font-bold text-gray-300">Q3</span>
+                          <h2 className="text-4xl font-bold text-gray-300">Q3</h2>
+                          {/* Number and Icon */}
+                          <div className="relative z-10">
+                            <div
+                              className={`bg-red-400 rounded-full w-20 h-20 flex items-center justify-center shadow-lg`}>
+                              <Earth className="w-12 h-12 text-white" />
+                            </div>
+                          </div>
                           <h3 className="text-xl font-semibold">Global Expansion & Dominance</h3>
                         </div>
 
@@ -500,18 +497,17 @@ export default function Overlay() {
                     {/* Dashed line connecting the milestones */}
                     <div className="absolute left-8 top-8 bottom-0 w-0.5 bg-gray-200 border-dashed border-l-2 border-gray-200" />
                     <div className="relative flex items-start gap-4 pb-12">
-                      {/* Number and Icon */}
-                      <div className="relative z-10">
-                        <div
-                          className={`bg-red-400 rounded-full w-20 h-20 flex items-center justify-center shadow-lg`}>
-                          <Trophy className="w-12 h-12 text-white" />
-                        </div>
-                      </div>
-
                       {/* Content */}
                       <div className="flex-1 pt-2">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-4xl font-bold text-gray-300">Q4</span>
+                          <h2 className="text-4xl font-bold text-gray-300">Q4</h2>
+                          {/* Number and Icon */}
+                          <div className="relative z-10">
+                            <div
+                              className={`bg-red-400 rounded-full w-20 h-20 flex items-center justify-center shadow-lg`}>
+                              <Trophy className="w-12 h-12 text-white" />
+                            </div>
+                          </div>
                           <h3 className="text-xl font-semibold">
                             Recognition & Institutional Integration
                           </h3>
