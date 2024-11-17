@@ -71,8 +71,8 @@ export default function CameraAnimation() {
       tl.to(
         '.section-1 .wrapper',
         {
-          opacity: 0, // Fade out the opacity
-          yPercent: 200,
+          // opacity: 0, // Fade out the opacity
+          // yPercent: 100,
           scrollTrigger: {
             trigger: '.section-2', // The animation is triggered by Section-2
             start: 'top bottom', // Start fading when Section-2 comes into view

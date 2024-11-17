@@ -557,7 +557,7 @@ export default function Overlay() {
           <p className="copyright">Copyright @tmc.live All rights reserved.</p>
         </div>
         <div className="footer-right">
-          <img src="brand.png" width={60} />
+          <img src="brand.png" width={80} />
 
           {/* <ul>
             <li>Privacy policy</li>
