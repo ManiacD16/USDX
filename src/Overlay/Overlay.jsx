@@ -2,61 +2,6 @@ import './styles.css'
 import { Rocket, Earth, Trophy, Handshake } from 'lucide-react'
 
 export default function Overlay() {
-  const milestones = [
-    {
-      number: 'Q1',
-      title: 'Immediate Launch',
-      description: [
-        'Full Functionality Available Day One: All smart contract features, including staking, LP provisioning, Trigger Peg Bot, and referral systems, are live from the start.',
-        'Global Awareness Campaign: Launch across major platforms with a focus on DeFi communities, early adopters, and KOLs (Key Opinion Leaders).',
-        'Airdrop & Referral Drives: Distribute USDX to incentivize new users and generate organic word-of-mouth buzz.'
-      ],
-      icon: Rocket,
-      color: 'bg-red-400'
-    },
-    {
-      number: 'Q2',
-      title: 'Strategic Partnerships & Mass Adoption',
-      description: [
-        'Partnerships with Big Brands & Projects: Collaborate with leading DeFi platforms, wallets, and blockchain ecosystems to integrate USDX.',
-        'Engage KOLs and Influencers: Partner with prominent crypto influencers and industry leaders to amplify visibility.',
-        'Major Media Coverage: Secure feature articles in top-tier media outlets like Forbes, CoinDesk, CryptoSlate, and more to establish USDX as a market leader.',
-        'Exchange Listings: Start negotiations with major decentralized and centralized exchanges for USDX listing.'
-      ],
-      icon: Handshake,
-      color: 'bg-yellow-400'
-    },
-    {
-      number: 'Q3',
-      title: 'Global Expansion & Dominance',
-      description: [
-        'Worldwide Ad Campaigns: Leverage digital marketing with high-impact campaigns on Google, YouTube, and Twitter.',
-        'Local Outreach: Host in-person and virtual events targeting emerging markets in Asia, Africa, and Latin America.',
-        'Ambassador Program: Recruit and empower community leaders to represent USDX globally, creating localized strategies for adoption.',
-        'Big-Brand Sponsorships: Secure sponsorships with recognized brands in finance, gaming, and e-commerce to position USDX as a mainstream asset.'
-      ],
-      icon: Earth,
-      color: 'bg-green-400'
-    },
-    {
-      number: 'Q4',
-      title: 'Recognition & Institutional Integration',
-      description: [
-        'Big Media Push: Feature USDX in documentaries, podcasts, and case studies showcasing its impact on decentralized finance.',
-        'Institutional Partnerships: Build relationships with venture capital firms, asset managers, and institutional players to integrate USDX into large-scale DeFi operations.',
-        'Major Exchange Listings: Secure listings on top exchanges like Binance, Coinbase, and Bybit to cement USDX’s position as a global stablecoin leader.'
-      ],
-      icon: Trophy,
-      color: 'bg-blue-400'
-    }
-    // {
-    //   number: '05',
-    //   title: 'Ultimate Success',
-    //   description: 'Achieve your ultimate career goals and help others succeed',
-    //   icon: Flag,
-    //   color: 'bg-purple-400'
-    // }
-  ]
   return (
     <div className="container">
       <header>
@@ -411,50 +356,188 @@ export default function Overlay() {
           </section>
         </section>
         <section className="section-9">
-          <section className="section section-1">
+          <section className="section section-3">
             <div className="wrapper">
-              <h2>
-                Unleashing Marketing Power – <strong>The USDX Roadmap</strong>
-              </h2>
-              <div className="max-w-2xl mx-auto p-4 space-y-16">
-                <div className="relative">
-                  {/* Dashed line connecting the milestones */}
-                  <div className="absolute left-8 top-8 bottom-0 w-0.5 bg-gray-200 border-dashed border-l-2 border-gray-200" />
-
-                  {milestones.map((milestone, index) => (
-                    <div key={index} className="relative flex items-start gap-4 pb-12">
+              <div className="numbers-title">
+                <h2>
+                  Unleashing Marketing Power – <strong>The USDX Roadmap</strong>
+                </h2>
+                <div className="max-w-2xl mx-auto p-4 space-y-16">
+                  <div className="relative">
+                    {/* Dashed line connecting the milestones */}
+                    <div className="absolute left-8 top-8 bottom-0 w-0.5 bg-gray-200 border-dashed border-l-2 border-gray-200" />
+                    <div className="relative flex items-start gap-4 pb-12">
                       {/* Number and Icon */}
                       <div className="relative z-10">
                         <div
-                          className={`${milestone.color} rounded-full w-20 h-20 flex items-center justify-center shadow-lg`}>
-                          <milestone.icon className="w-12 h-12 text-white" />
+                          className={`bg-red-400 rounded-full w-20 h-20 flex items-center justify-center shadow-lg`}>
+                          <Rocket className="w-12 h-12 text-white" />
                         </div>
                       </div>
 
                       {/* Content */}
                       <div className="flex-1 pt-2">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-4xl font-bold text-gray-300">
-                            {milestone.number}
-                          </span>
-                          <h3 className="text-xl font-semibold">{milestone.title}</h3>
+                          <span className="text-4xl font-bold text-gray-300">Q1</span>
+                          <h3 className="text-xl font-semibold">Immediate Launch</h3>
                         </div>
 
                         {/* List of Description Points */}
                         <ul className="text-gray-600 list-disc pl-5 max-w-md ml-6">
-                          {Array.isArray(milestone.description) ? (
-                            milestone.description.map((point, i) => (
-                              <li key={i} className="mb-2">
-                                {point}
-                              </li>
-                            ))
-                          ) : (
-                            <li>{milestone.description}</li> // Fallback for single string description
-                          )}
+                          <li className="mb-2">
+                            <strong>Full Functionality Available Day One: </strong>All smart
+                            contract features, including staking, LP provisioning, Trigger Peg Bot,
+                            and referral systems, are live from the start.
+                          </li>
+                          <li className="mb-2">
+                            <strong>Global Awareness Campaign: </strong>Launch across major
+                            platforms with a focus on DeFi communities, early adopters, and KOLs
+                            (Key Opinion Leaders).
+                          </li>
+                          <li className="mb-2">
+                            <strong>Airdrop & Referral Drives: </strong>Distribute USDX to
+                            incentivize new users and generate organic word-of-mouth buzz.
+                          </li>
                         </ul>
                       </div>
                     </div>
-                  ))}
+                  </div>
+                </div>
+                <div className="max-w-2xl mx-auto p-4 space-y-16">
+                  <div className="relative">
+                    {/* Dashed line connecting the milestones */}
+                    <div className="absolute left-8 top-8 bottom-0 w-0.5 bg-gray-200 border-dashed border-l-2 border-gray-200" />
+                    <div className="relative flex items-start gap-4 pb-12">
+                      {/* Number and Icon */}
+                      <div className="relative z-10">
+                        <div
+                          className={`bg-red-400 rounded-full w-20 h-20 flex items-center justify-center shadow-lg`}>
+                          <Handshake className="w-12 h-12 text-white" />
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 pt-2">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-4xl font-bold text-gray-300">Q2</span>
+                          <h3 className="text-xl font-semibold">
+                            Strategic Partnerships & Mass Adoption
+                          </h3>
+                        </div>
+
+                        {/* List of Description Points */}
+                        <ul className="text-gray-600 list-disc pl-5 max-w-md ml-6">
+                          <li className="mb-2">
+                            <strong>Partnerships with Big Brands & Projects: </strong>Collaborate
+                            with leading DeFi platforms, wallets, and blockchain ecosystems to
+                            integrate USDX.
+                          </li>
+                          <li className="mb-2">
+                            <strong>Engage KOLs and Influencers: </strong>Partner with prominent
+                            crypto influencers and industry leaders to amplify visibility.
+                          </li>
+                          <li className="mb-2">
+                            <strong>Major Media Coverage: </strong>Secure feature articles in
+                            top-tier media outlets like Forbes, CoinDesk, CryptoSlate, and more to
+                            establish USDX as a market leader.
+                          </li>
+                          <li className="mb-2">
+                            <strong>Exchange Listings: </strong>Start negotiations with major
+                            decentralized and centralized exchanges for USDX listing.
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="max-w-2xl mx-auto p-4 space-y-16">
+                  <div className="relative">
+                    {/* Dashed line connecting the milestones */}
+                    <div className="absolute left-8 top-8 bottom-0 w-0.5 bg-gray-200 border-dashed border-l-2 border-gray-200" />
+                    <div className="relative flex items-start gap-4 pb-12">
+                      {/* Number and Icon */}
+                      <div className="relative z-10">
+                        <div
+                          className={`bg-red-400 rounded-full w-20 h-20 flex items-center justify-center shadow-lg`}>
+                          <Earth className="w-12 h-12 text-white" />
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 pt-2">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-4xl font-bold text-gray-300">Q3</span>
+                          <h3 className="text-xl font-semibold">Global Expansion & Dominance</h3>
+                        </div>
+
+                        {/* List of Description Points */}
+                        <ul className="text-gray-600 list-disc pl-5 max-w-md ml-6">
+                          <li className="mb-2">
+                            <strong>Worldwide Ad Campaigns: </strong>Leverage digital marketing with
+                            high-impact campaigns on Google, YouTube, and Twitter.
+                          </li>
+                          <li className="mb-2">
+                            <strong>Local Outreach: </strong>Host in-person and virtual events
+                            targeting emerging markets in Asia, Africa, and Latin America.
+                          </li>
+                          <li className="mb-2">
+                            <strong>Ambassador Program: </strong>Recruit and empower community
+                            leaders to represent USDX globally, creating localized strategies for
+                            adoption.
+                          </li>
+                          <li className="mb-2">
+                            <strong>Big-Brand Sponsorships: </strong>Secure sponsorships with
+                            recognized brands in finance, gaming, and e-commerce to position USDX as
+                            a mainstream asset.
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="max-w-2xl mx-auto p-4 space-y-16">
+                  <div className="relative">
+                    {/* Dashed line connecting the milestones */}
+                    <div className="absolute left-8 top-8 bottom-0 w-0.5 bg-gray-200 border-dashed border-l-2 border-gray-200" />
+                    <div className="relative flex items-start gap-4 pb-12">
+                      {/* Number and Icon */}
+                      <div className="relative z-10">
+                        <div
+                          className={`bg-red-400 rounded-full w-20 h-20 flex items-center justify-center shadow-lg`}>
+                          <Trophy className="w-12 h-12 text-white" />
+                        </div>
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 pt-2">
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-4xl font-bold text-gray-300">Q4</span>
+                          <h3 className="text-xl font-semibold">
+                            Recognition & Institutional Integration
+                          </h3>
+                        </div>
+
+                        {/* List of Description Points */}
+                        <ul className="text-gray-600 list-disc pl-5 max-w-md ml-6">
+                          <li className="mb-2">
+                            <strong>Big Media Push: </strong>Feature USDX in documentaries,
+                            podcasts, and case studies showcasing its impact on decentralized
+                            finance.
+                          </li>
+                          <li className="mb-2">
+                            <strong>Institutional Partnerships: </strong>Build relationships with
+                            venture capital firms, asset managers, and institutional players to
+                            integrate USDX into large-scale DeFi operations.
+                          </li>
+                          <li className="mb-2">
+                            <strong>Major Exchange Listings: </strong>Secure listings on top
+                            exchanges like Binance, Coinbase, and Bybit to cement USDX’s position as
+                            a global stablecoin leader.
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
