@@ -1,0 +1,52 @@
+.section-4 {
+  justify-content: flex-start;
+  padding-left: 4em;
+  align-items: center;
+}
+
+.section-4 .wrapper {
+  margin-top: 60px;
+  width: 600px;
+}
+
+.section-4 .wrapper h2 {
+  font-size: 4.5em;
+  font-weight: 200;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+  line-height: 0.9em;
+  padding: 0;
+  margin-bottom: 20px;
+  color: rgba(60, 147, 184, 0.9);
+}
+
+.section-4 .wrapper ul {
+  font-weight: 300;
+  line-height: 1.6em;
+  padding: 20px 20px;
+  font-family: 'Roboto Flex', sans-serif;
+}
+
+  .section-4 .wrapper p {
+    font-size: 1em;
+  }
+
+    .section-4 .wrapper h2 {
+    font-size: 2.5em;
+  }
+
+    .section-4 {
+    width: 90%;
+    padding-left: 2em;
+    justify-content: center;
+  }
+
+  .section-4 .wrapper ul {
+    font-size: 0.9em;
+  }
+
+    .section-4 .wrapper p {
+    padding: 0;
+    margin: 0;
+    font-size: 0.8em;
+  }
