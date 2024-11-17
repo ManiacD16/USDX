@@ -6,7 +6,7 @@ export default function Overlay() {
     <div className="container">
       <header>
         <div className="brand">
-          <img src="brand.png" width={60} />
+          <img src="brand.png" width={30} />
           <p>
             <strong>USDX</strong>
           </p>
