@@ -17,8 +17,8 @@ export default function Overlay() {
             <li>Numbers</li>
             <li>Engage</li>
           </ul>
-        </div>
-        <button>KNOW MORE</button> */}
+        </div> */}
+        <button>Connect Wallet</button>
       </header>
 
       <div className="main-wrapper">

@@ -20,7 +20,7 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 20px 30px;
-  position: absolute;
+  position: fixed;
   width: 100%;
   pointer-events: all;
 }
