@@ -33,23 +33,23 @@ function Scene() {
       <Suspense fallback={null}>
         <CameraRig>
           <Float rotation={[-0.8, 0, -Math.PI / 2.5]} floatIntensity={4} rotationIntensity={4}>
-            <Cylinder args={[1.8, 1.8, 0.2, 200]}>
-              <MeshTransmissionMaterial
-                ior={1.3}
-                color={'#c3e9ff'}
-                clearcoat={0.5}
-                roughness={0.3}
-                iridescence={1}
-                iridescenceIOR={1.55}
-                chromaticAberration={0.15}
-                anisotropicBlur={0.1}
-              />
-            </Cylinder>
+            {/* <Cylinder args={[1.8, 1.8, 0.2, 200]}> */}
+            <MeshTransmissionMaterial
+              ior={1.3}
+              color={'#c3e9ff'}
+              clearcoat={0.5}
+              roughness={0.3}
+              iridescence={1}
+              iridescenceIOR={1.55}
+              chromaticAberration={0.15}
+              anisotropicBlur={0.1}
+            />
+            {/* </Cylinder> */}
 
             {/* Position ETH inside the cylinder */}
             <Robo
-              scale={[0.6, 0.85, 0.22]}
-              position={[0, 0, -2.5]} // Adjusted to be inside the cylinder
+              scale={[35, 35, 15]} // Increased size
+              position={[0, 0, -0.1]} // Adjusted to be inside the cylinder
               rotation={[Math.PI / 2, 0, 0]} // Lay flat
             />
           </Float>
