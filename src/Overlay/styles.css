@@ -19,11 +19,27 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 30px;
+  padding: 0.005rem 30px;
   position: fixed;
   width: 100%;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.1); /* Semi-transparent background */
+  z-index: 9999; /* Ensure the header stays on top of other content */
   pointer-events: all;
+  transition: backdrop-filter 0.3s ease-in-out; /* Smooth transition for blur effect */
 }
+
+/* Initial state without blur */
+header.no-blur {
+  backdrop-filter: none;
+}
+
+/* When scrolled, apply the blur */
+header.blur {
+  backdrop-filter: blur(10px); /* Adjust the blur value as needed */
+}
+
 
 .brand {
   display: flex;
