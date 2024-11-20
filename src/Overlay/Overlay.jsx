@@ -1,10 +1,32 @@
 import './styles.css'
 import { Rocket, Earth, Trophy, Handshake } from 'lucide-react'
+import React, { useState, useEffect } from 'react'
 
 export default function Overlay() {
+  const [isScrolled, setIsScrolled] = useState(false)
+
+  // Detect scroll event and add blur effect
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        // Adjust scroll threshold as needed
+        setIsScrolled(true)
+      } else {
+        setIsScrolled(false)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll)
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
   return (
     <div className="container">
-      <header>
+      <header className={isScrolled ? 'blur' : 'no-blur'}>
         <div className="brand">
           <img src="brand.png" width={30} />
           <p>
