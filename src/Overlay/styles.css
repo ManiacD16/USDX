@@ -247,14 +247,14 @@ footer {
   justify-content: space-between;
   align-items: center;
   padding: 5em;
-  height: 400px;
+  height: 250px;
   color: white;
   background-color: #4290c8;
 }
 
 .footer-left h3 {
   text-transform: uppercase;
-  font-size: 8em;
+  font-size: 5em;
   line-height: 0.8;
   margin: 0;
   padding: 0;
@@ -263,7 +263,7 @@ footer {
 .footer-left p {
   color: white;
   text-transform: uppercase;
-  font-size: 5em;
+  font-size: 3.5em;
   line-height: 1em;
   margin: 0;
   padding: 0;
