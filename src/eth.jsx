@@ -6,7 +6,7 @@ import React, { useRef } from 'react'
 import { useGLTF } from '@react-three/drei'
 
 export default function Model(props) {
-  const { nodes, materials } = useGLTF('/coin14.glb')
+  const { nodes, materials } = useGLTF('/coin.glb')
   return (
     <group {...props} dispose={null}>
       <group scale={0.001}>
@@ -399,4 +399,4 @@ export default function Model(props) {
   )
 }
 
-useGLTF.preload('/coin14.glb')
+useGLTF.preload('/coin.glb')

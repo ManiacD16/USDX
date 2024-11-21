@@ -34,7 +34,7 @@ function Scene() {
         <CameraRig>
           <Float rotation={[-0.8, 0, -Math.PI / 2.5]} floatIntensity={4} rotationIntensity={4}>
             {/* <Cylinder args={[1.8, 1.8, 0.2, 200]}> */}
-            <MeshTransmissionMaterial
+            {/* <MeshTransmissionMaterial
               ior={1.3}
               color={'#c3e9ff'}
               clearcoat={0.5}
@@ -43,7 +43,7 @@ function Scene() {
               iridescenceIOR={1.55}
               chromaticAberration={0.15}
               anisotropicBlur={0.1}
-            />
+            /> */}
             {/* </Cylinder> */}
 
             {/* Position ETH inside the cylinder */}
@@ -54,7 +54,7 @@ function Scene() {
             />
           </Float>
 
-          <Environment preset="city" environmentIntensity={3}>
+          <Environment preset="city" environmentIntensity={1.5}>
             <Lightformer form="rect" intensity={0.1} position={[2, 3, 3]} scale={3} />
             <Lightformer form="rect" intensity={0.1} position={[-2, 2, -4]} scale={3} />
           </Environment>
