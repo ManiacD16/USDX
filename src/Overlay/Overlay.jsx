@@ -309,7 +309,17 @@ export default function Overlay() {
                 <li>
                   <strong>Seamless Staking</strong>
                 </li>
-                <div className="card-wrapper">
+                <p>
+                  Unlock the full potential of your assets with <strong>USDX </strong>Staking,
+                  designed to provide flexible and rewarding opportunities for everyone.
+                </p>
+                <p>
+                  Earn daily returns ranging from <strong>0.3%</strong> to <strong>1%, </strong>
+                  tailored to suit your staking tier. Whether you're a beginner or a seasoned
+                  investor, our platform empowers you to maximize your gains with secure,
+                  transparent, and efficient staking solutions.
+                </p>
+                {/* <div className="card-wrapper">
                   <div className="card">
                     <h2>0.3%</h2>
                     <p>
@@ -362,7 +372,7 @@ export default function Overlay() {
                       maximizing your earning potential.
                     </p>
                   </div>
-                </div>
+                </div> */}
               </ul>
               <ul>
                 <li>
@@ -370,10 +380,10 @@ export default function Overlay() {
                   <p>
                     New users can access one-time yield packages with exceptional incentives,
                     starting at <strong>$5,000 </strong>and scaling up to{' '}
-                    <strong>$500,000, </strong>with returns as high as <strong>$650,000 </strong>for
-                    the top-tier Empire package.
+                    <strong>$1,000,000, </strong>with returns as high as{' '}
+                    <strong>$1,300,000 </strong>for the top-tier Empire package.
                   </p>
-                  <div className="card-wrapper">
+                  {/* <div className="card-wrapper">
                     <div className="card">
                       <h2>$5,000</h2>
                     </div>
@@ -395,7 +405,7 @@ export default function Overlay() {
                     <div className="card">
                       <h2>$500,000</h2>
                     </div>
-                  </div>
+                  </div> */}
                 </li>
               </ul>
               <ul>
@@ -420,6 +430,23 @@ export default function Overlay() {
                     Climb the ranks to unlock lucrative one-time rewards, monthly incentives, and
                     even a share of global turnover for top achievers.
                   </p>
+                </li>
+              </ul>
+              <h2>
+                Why Choose <strong>USDX Staking?</strong>
+              </h2>
+              <ul>
+                <li>
+                  <strong>Dynamic ROI: </strong>
+                  <p>Enjoy daily rewards that grow with your commitment.</p>
+                </li>
+                <li>
+                  <strong>User-Friendly: </strong>
+                  <p>Simple onboarding and seamless management of your stakes.</p>
+                </li>
+                <li>
+                  <strong>Robust Security: </strong>
+                  <p>Powered by blockchain technology, ensuring safety and transparency.</p>
                 </li>
               </ul>
             </div>
