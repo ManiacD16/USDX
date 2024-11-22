@@ -239,8 +239,8 @@ export default function Overlay() {
                 Breaking Free from <strong>Centralized Stablecoins</strong>
               </h2>
               <p>
-                Traditional stablecoins like
-                <strong>USDT </strong>and <strong>USDC </strong>come with centralized risks:
+                Traditional stablecoins like <strong>USDT </strong>and <strong>USDC </strong>come
+                with centralized risks:
               </p>
               <ul>
                 <li>
@@ -311,16 +311,54 @@ export default function Overlay() {
                 </li>
                 <div className="card-wrapper">
                   <div className="card">
+                    <h2>0.3%</h2>
+                    <p>
+                      <strong>Regular Staking: </strong>Earn 0.3% daily Yield with stable,
+                      predictable returns.
+                    </p>
+                  </div>
+                  <div className="card">
                     <h2>0.4%</h2>
                     <p>
-                      <strong>Regular Staking: </strong>Earn 0.4% daily Yield with stable,
-                      predictable returns.
+                      <strong>Smart X Staking: </strong>Enjoy higher rewards with 0.4% daily Yield,
+                      maximizing your earning potential.
+                    </p>
+                  </div>
+                  <div className="card">
+                    <h2>0.5%</h2>
+                    <p>
+                      <strong>Plus X Staking: </strong>Enjoy higher rewards with 0.5% daily Yield,
+                      maximizing your earning potential.
                     </p>
                   </div>
                   <div className="card">
                     <h2>0.6%</h2>
                     <p>
-                      <strong>X PRO Staking: </strong>Enjoy higher rewards with 0.6% daily Yield,
+                      <strong>Pro X Staking: </strong>Enjoy higher rewards with 0.6% daily Yield,
+                      maximizing your earning potential.
+                    </p>
+                  </div>
+                </div>
+                <br></br>
+                <div className="card-wrapper">
+                  <div className="card">
+                    <h2>0.7%</h2>
+                    <p>
+                      <strong>Royal X Staking: </strong>Earn 0.7% daily Yield with stable,
+                      predictable returns.
+                    </p>
+                  </div>
+                  <div className="card">
+                    <h2>0.8%</h2>
+                    <p>
+                      <strong>Chief X Staking: </strong>Enjoy higher rewards with 0.8% daily Yield,
+                      maximizing your earning potential.
+                    </p>
+                  </div>
+                  <div className="card">
+                    <h2>1%</h2>
+                    <p>
+                      <strong>Empire X Staking: </strong>Enjoy higher rewards with 1% daily Yield,
                       maximizing your earning potential.
                     </p>
                   </div>
@@ -331,21 +369,31 @@ export default function Overlay() {
                   <strong>Exclusive Yield Packages</strong>
                   <p>
                     New users can access one-time yield packages with exceptional incentives,
-                    starting at <strong>$1,000 </strong>and scaling up to{' '}
-                    <strong>$100,000, </strong>with returns as high as <strong>$125,000 </strong>for
+                    starting at <strong>$5,000 </strong>and scaling up to{' '}
+                    <strong>$500,000, </strong>with returns as high as <strong>$650,000 </strong>for
                     the top-tier Empire package.
                   </p>
                   <div className="card-wrapper">
-                    <div className="card-wrapper">
-                      <div className="card">
-                        <h2>$1,000</h2>
-                      </div>
-                      <div className="card">
-                        <h2>$100,000</h2>
-                      </div>
-                      <div className="card">
-                        <h2>$125,000</h2>
-                      </div>
+                    <div className="card">
+                      <h2>$5,000</h2>
+                    </div>
+                    <div className="card">
+                      <h2>$10,000</h2>
+                    </div>
+                    <div className="card">
+                      <h2>$25,000</h2>
+                    </div>
+                  </div>
+                  <br></br>
+                  <div className="card-wrapper">
+                    <div className="card">
+                      <h2>$50,000</h2>
+                    </div>
+                    <div className="card">
+                      <h2>$100,000</h2>
+                    </div>
+                    <div className="card">
+                      <h2>$500,000</h2>
                     </div>
                   </div>
                 </li>
