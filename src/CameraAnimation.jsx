@@ -31,7 +31,7 @@ export default function CameraAnimation() {
         camera.position, // Starting from the initial camera position
         { x: 0, y: 1, z: 4 }, // Initial position
         {
-          x: 2.56, // End position in the X axis
+          x: 3.56, // End position in the X axis
           y: -1.01, // End position in the Y axis
           z: 2, // End position in the Z axis
           ease: 'power1.inOut', // Smooth easing for the animation
@@ -86,7 +86,7 @@ export default function CameraAnimation() {
       // Section 2 -> Section 3 animation: Camera moves to a new position
       tl.fromTo(
         camera.position, // From the position at the end of Section-2
-        { x: 2.56, y: -1.01, z: 2 }, // Starting position (end of Section-2)
+        { x: 3.56, y: -1.01, z: 2 }, // Starting position (end of Section-2)
         {
           x: 0, // Move the camera to the center on the X axis
           y: -1.01, // Keep the Y position the same
@@ -131,7 +131,7 @@ export default function CameraAnimation() {
         }, // Starting position (end of Section-2)
 
         {
-          x: 2.56,
+          x: 3.56,
           y: -1.01,
           z: 2,
           ease: 'power2.inOut', // Smooth easing
@@ -173,7 +173,7 @@ export default function CameraAnimation() {
       // Section 4 -> Section 5 animation: Camera moves to a new position
       tl.fromTo(
         camera.position, // From the position at the end of Section-2
-        { x: 2.56, y: -1.01, z: 2 }, // Starting position (end of Section-2)
+        { x: 3.56, y: -1.01, z: 2 }, // Starting position (end of Section-2)
         {
           x: 0, // Move the camera to the center on the X axis
           y: -1.01, // Keep the Y position the same
@@ -219,7 +219,7 @@ export default function CameraAnimation() {
         }, // Starting position (end of Section-2)
 
         {
-          x: 2.56,
+          x: 3.56,
           y: -1.01,
           z: 2,
           ease: 'power2.inOut', // Smooth easing
@@ -261,7 +261,7 @@ export default function CameraAnimation() {
       // Section 6 -> Section 7 animation: Camera moves to a new position
       tl.fromTo(
         camera.position, // From the position at the end of Section-2
-        { x: 2.56, y: -1.01, z: 2 }, // Starting position (end of Section-2)
+        { x: 3.56, y: -1.01, z: 2 }, // Starting position (end of Section-2)
         {
           x: 0, // Move the camera to the center on the X axis
           y: -1.01, // Keep the Y position the same
@@ -307,7 +307,7 @@ export default function CameraAnimation() {
         }, // Starting position (end of Section-2)
 
         {
-          x: 2.56,
+          x: 3.56,
           y: -1.01,
           z: 2,
           ease: 'power2.inOut', // Smooth easing
@@ -349,7 +349,7 @@ export default function CameraAnimation() {
       // Section 8 -> Section 9 animation: Camera moves to a new position
       tl.fromTo(
         camera.position, // From the position at the end of Section-2
-        { x: 2.56, y: -1.01, z: 2 }, // Starting position (end of Section-2)
+        { x: 3.56, y: -1.01, z: 2 }, // Starting position (end of Section-2)
         {
           x: 0, // Move the camera to the center on the X axis
           y: -1.01, // Keep the Y position the same
