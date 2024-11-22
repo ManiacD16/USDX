@@ -65,3 +65,273 @@
 .icon {
     color: #B87333; /* Gold color */
 }
+
+.card {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 10px 30px;
+  border-radius: 35px;
+  backdrop-filter: blur(10px) saturate(2) contrast(1.3);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
+}
+
+.card h2 {
+  font-size: 3em;
+  font-weight: 300;
+  letter-spacing: -0.06em;
+  line-height: 1em;
+  margin: 0.5em 0;
+  color: rgb(60, 147, 184);
+}
+
+.card h2 span {
+  font-size: 0.7rem; /* Adjust the size if needed */
+  letter-spacing: 0.05em; /* Adds letter spacing */
+  word-spacing: 0.1em; /* Adds spacing between words */
+  color: #4b5563; /* Optional: Adjust the color for contrast */
+}
+
+
+.card p {
+  color: #236f92;
+  font-size: 2em;
+   margin-bottom: 0.5em;
+}
+
+.button {
+  background-color: rgba(77, 186, 121, 0.757);
+  /* padding: 8px 30px; */
+  border-radius: 35px;
+  backdrop-filter: blur(10px) saturate(2) contrast(1.3);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+.button:hover {
+  background-color: rgba(61, 154, 95, 0.8); /* Darker background on hover */
+  box-shadow: 0 12px 14px rgba(0, 0, 0, 0.3); /* Slightly more intense shadow on hover */
+}
+
+
+.referral {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 0px 0px;
+  border-radius: 35px;
+  backdrop-filter: blur(10px) saturate(2) contrast(1.3);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
+}
+
+.yield {
+  background-color: rgba(255, 255, 255, 0.7);
+  padding: 10px 20px;
+  border-radius: 35px;
+  backdrop-filter: blur(10px) saturate(2) contrast(1.3);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
+}
+
+.yield h2 {
+  font-size: 3em;
+  font-weight: 300;
+  letter-spacing: -0.06em;
+  line-height: 1em;
+  margin: 0.5em 0;
+  color: rgb(60, 147, 184);
+}
+
+.yield h2 span {
+  font-size: 0.7rem; /* Adjust the size if needed */
+  letter-spacing: 0.05em; /* Adds letter spacing */
+  word-spacing: 0.1em; /* Adds spacing between words */
+  color: #4b5563; /* Optional: Adjust the color for contrast */
+}
+
+
+.yield p {
+  color: #236f92;
+  font-size: 1.1em;
+   /* margin-bottom: 0.5em; */
+}
+
+.buy {
+  background-color: rgba(77, 186, 121, 0.757);
+  padding: 8px 30px;
+  border-radius: 35px;
+  backdrop-filter: blur(10px) saturate(2) contrast(1.3);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition */
+}
+
+.buy:hover {
+  background-color: rgba(61, 154, 95, 0.8); /* Darker background on hover */
+  box-shadow: 0 12px 14px rgba(0, 0, 0, 0.3); /* Slightly more intense shadow on hover */
+}
+
+.h2 {
+  font-size: 3em; /* Default font size */
+  font-weight: 300;
+  letter-spacing: -0.06em;
+  line-height: 1em;
+  margin: 0.7em 0;
+  color: rgb(60, 147, 184);
+  text-align: left;
+  margin-left: 0.5em; /* Adjust this value to move it left further or less */
+  transform: scaleY(1.6); /* Stretches the text vertically */
+
+  /* Responsive font sizes */
+  @media (max-width: 1024px) {
+    font-size: 2.5em; /* Smaller font on tablets */
+  }
+
+  @media (max-width: 768px) {
+    font-size: 2em; /* Even smaller font on mobile devices */
+    margin-left: 0.25em; /* Reduce margin on smaller screens */
+  }
+
+  @media (max-width: 480px) {
+    font-size: 1.8em; /* Further reduction for very small screens */
+    margin-left: 0.5em; /* Keep the margin for extra-small screens */
+  }
+}
+
+
+
+.team {
+  background-color: rgba(255, 255, 255, 0.7);
+  /* padding: 10px 30px; */
+  border-radius: 35px;
+  backdrop-filter: blur(10px) saturate(2) contrast(1.3);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
+}
+
+.team div {
+  background-color: rgba(255, 255, 255, 0.7);
+  /* padding: 10px 30px; */
+  /* border-radius: 35px; */
+  backdrop-filter: blur(10px) saturate(2) contrast(1.3);
+  /* box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2); */
+}
+
+.team th {
+  font-size: 1.4em;
+  font-weight: 300;
+  letter-spacing: -0.06em;
+  line-height: 1em;
+  /* margin: 0.5em 0; */
+  color: rgb(60, 147, 184);
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  margin-bottom: 0.1em;
+}
+
+.team h2 {
+  font-size: 1.7em;
+  font-weight: 300;
+  letter-spacing: -0.06em;
+  line-height: 1em;
+  /* margin: 0.5em 0; */
+  color: rgb(33, 84, 106);
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  margin-bottom: 0.1em;
+}
+
+.team h2:hover {
+  font-weight: 350; /* Make it semibold */
+  color: rgb(45, 120, 150); /* Darker shade of the original color*/
+ }
+
+.team th:hover {
+  font-weight: 350; /* Make it semibold */
+  color: rgb(45, 120, 150); /* Darker shade of the original color */
+}
+
+
+
+.team h2 span {
+  font-size: 0.7rem; /* Adjust the size if needed */
+  letter-spacing: 0.05em; /* Adds letter spacing */
+  word-spacing: 0.1em; /* Adds spacing between words */
+  color: #4b5563; /* Optional: Adjust the color for contrast */
+}
+
+
+.team p {
+  color: #236f92;
+  font-size: 1.2em;
+   margin-bottom: 0.5em;
+}
+
+
+.stake {
+  background-color: rgba(255, 255, 255, 0.7);
+  /* padding: 10px 30px; */
+  border-radius: 35px;
+  backdrop-filter: blur(10px) saturate(2) contrast(1.3);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
+}
+
+.stake button {
+  font-size: 1.7em;
+  font-weight: 300;
+  letter-spacing: -0.06em;
+  line-height: 1em;
+  /* margin: 0.5em 0; */
+  color: rgb(33, 84, 106);
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  /* margin-bottom: 0.1em; */
+}
+
+.stake h2 span {
+  font-size: 0.7rem; /* Adjust the size if needed */
+  letter-spacing: 0.05em; /* Adds letter spacing */
+  word-spacing: 0.1em; /* Adds spacing between words */
+  color: #4b5563; /* Optional: Adjust the color for contrast */
+}
+
+
+.stake p {
+  color: #236f92;
+  font-size: 1.2em;
+   margin-bottom: 0.5em;
+}
+
+.income {
+  background-color: rgba(255, 255, 255, 0.7);
+  /* padding: 10px 30px; */
+  border-radius: 35px;
+  backdrop-filter: blur(10px) saturate(2) contrast(1.3);
+  box-shadow: 0 8px 10px rgba(0, 0, 0, 0.2);
+}
+
+.income button {
+  font-size: 1.7em;
+  font-weight: 300;
+  letter-spacing: -0.06em;
+  line-height: 1em;
+  /* margin: 0.5em 0; */
+  color: rgb(33, 84, 106);
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  /* margin-bottom: 0.1em; */
+}
+
+.income h2 span {
+  font-size: 0.7rem; /* Adjust the size if needed */
+  letter-spacing: 0.05em; /* Adds letter spacing */
+  word-spacing: 0.1em; /* Adds spacing between words */
+  color: #4b5563; /* Optional: Adjust the color for contrast */
+}
+
+
+.income p {
+  color: #236f92;
+  font-size: 1.2em;
+   margin-bottom: 0.5em;
+}
+
+.side h1 {
+  font-size: 3em;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 1em;
+  /* margin: 0.5em 0; */
+  color: rgb(33, 84, 106);
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+  margin-bottom: 0.1em;
+}

@@ -1,20 +1,27 @@
 import { useState, useContext, useEffect } from "react";
 // import { useEffect, useContext } from "react";
 // import { useNavigate } from "react-router-dom";
-import { UserContext } from "../App";
-import { useWeb3Modal } from "@web3modal/ethers5/react";
+import { contractAbi } from "./Props/contractAbi.ts";
+import { contractAddress } from "./Props/contractAddress.ts";
+import { ethers } from "ethers";
 // import SimpleBar from "simplebar-react";
 // import "simplebar-react/dist/simplebar.min.css"; // Import SimpleBar styles
 import {
   Home,
-  // UsersIcon,
-  // ChartBarIcon,
-  // ChevronDown,
+  UsersIcon,
+  ChevronDown,
   Circle,
+  DollarSign,
+  Lock,
+  Gift,
   X,
 } from "lucide-react"; // Using Lucide icons
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../AuthContext"; // Import AuthContext
+import {
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+} from "@web3modal/ethers5/react";
+import { useWeb3Modal } from "@web3modal/ethers5/react";
 // import Avatar1 from "./Images/Logo1.png";
 // import Avatar2 from "./Images/Avatar.jpg";
 // import Avatar3 from "./Images/Avatar1.jpg";
@@ -28,160 +35,82 @@ const Sidebar = ({
   setIsSidebarOpen: (isOpen: boolean) => void;
 }) => {
   const { open } = useWeb3Modal();
-  const { RemoveTokenFromLS } = useAuth();
-  const { token: userToken } = useAuth(); // Access token and isAuthenticated from AuthContext
-  // const [isTeamDropdownOpen, setTeamDropdownOpen] = useState(false);
-  // const [isStakeDropdownOpen, setStakeDropdownOpen] = useState(false);
-  // const [isIncomeDropdownOpen, setIncomeDropdownOpen] = useState(false);
-  // const [isRewardsDropdownOpen, setRewardsDropdownOpen] = useState(false);
+  const [isTeamDropdownOpen, setTeamDropdownOpen] = useState(false);
+  const [isStakeDropdownOpen, setStakeDropdownOpen] = useState(false);
+  const [isIncomeDropdownOpen, setIncomeDropdownOpen] = useState(false);
+  const [isRewardsDropdownOpen, setRewardsDropdownOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>("");
   const navigate = useNavigate();
   const [rank, setRank] = useState(null); // Initial state for the user's rank
+  const [contract, setContract] = useState<ethers.Contract | null>(null);
+  const [userData2, setUserData2] = useState<{ rk?: number }>({});
+  type Rank = "Starter" | "Bronze" | "Silver" | "Gold" | "Diamond";
+
+  const rankLabels: Rank[] = ["Starter", "Bronze", "Silver", "Gold", "Diamond"];
   // const [token, setToken] = useState(localStorage.getItem("token"));
   //  const [isLoggingOut, setIsLoggingOut] = useState(false);
   //   const [selectedAvatar, setSelectedAvatar] = useState(avatars[0]);
-  //   const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const { walletProvider } = useWeb3ModalProvider();
+  const { address } = useWeb3ModalAccount();
 
-  const { dispatch } = useContext(UserContext);
-
-  const handleLogout = async () => {
-    try {
-      // Clear the token from localStorage using the auth context
-      RemoveTokenFromLS();
-
-      // Update the user state to logged out
-      dispatch({ type: "USER", payload: false });
-
-      // Navigate to the login page
-      navigate("/login", { replace: true });
-    } catch (err) {
-      console.log("Logout error:", err);
-      alert("An error occurred while logging out. Please try again.");
-    }
+  const toggleTeamDropdown = () => {
+    setTeamDropdownOpen(!isTeamDropdownOpen);
+    setStakeDropdownOpen(false);
+    setIncomeDropdownOpen(false);
+    setRewardsDropdownOpen(false);
   };
 
-  // const handleDeleteAccount = async () => {
-  //   try {
-  //     setLoading(true);
-  //     setError(null); // Reset any previous error
-  //     setMessage(null); // Reset any previous message
+  const toggleStakeDropdown = () => {
+    setStakeDropdownOpen(!isStakeDropdownOpen);
+    setIncomeDropdownOpen(false);
+    setRewardsDropdownOpen(false);
+  };
 
-  //     const response = await fetch("https://tmc-phi.vercel.app/api/auth/delete", {
-  //       method: "DELETE",
-  //       headers: {
-  //         Authorization: `Bearer ${localStorage.getItem("userToken")}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ password, confirmMessage }),
-  //     });
+  const toggleIncomeDropdown = () => {
+    setIncomeDropdownOpen(!isIncomeDropdownOpen);
+    setStakeDropdownOpen(false);
+    setRewardsDropdownOpen(false);
+  };
 
-  //     if (!response.ok) {
-  //       const data = await response.json();
-  //       throw new Error(data.error || "Failed to delete account");
-  //     }
-
-  //     const data = await response.json();
-  //     setMessage(data.message); // Show success message
-  //     // Optionally, redirect the user to a different page
-  //     // window.location.href = '/login';  // Redirect to login page after account deletion
-  //   } catch (error: any) {
-  //     setError(error.message);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // const toggleTeamDropdown = () => {
-  //   setTeamDropdownOpen(!isTeamDropdownOpen);
-  //   setStakeDropdownOpen(false);
-  //   setIncomeDropdownOpen(false);
-  //   setRewardsDropdownOpen(false);
-  // };
-
-  // const toggleStakeDropdown = () => {
-  //   setStakeDropdownOpen(!isStakeDropdownOpen);
-  //   setIncomeDropdownOpen(false);
-  //   setRewardsDropdownOpen(false);
-  // };
-
-  // const toggleIncomeDropdown = () => {
-  //   setIncomeDropdownOpen(!isIncomeDropdownOpen);
-  //   setStakeDropdownOpen(false);
-  //   setRewardsDropdownOpen(false);
-  // };
-
-  // const toggleRewardsDropdown = () => {
-  //   setRewardsDropdownOpen(!isRewardsDropdownOpen);
-  //   setStakeDropdownOpen(false);
-  //   setIncomeDropdownOpen(false);
-  // };
-
-  //   const handleAvatarClick = (avatar: string) => {
-  //     setSelectedAvatar(avatar);
-  //     setIsOpen(false);
-  //   };
-
-  //   const togglePopup = () => {
-  //     setIsOpen(!isOpen);
-  //   };
-
-  //  const handleLogout = async () => {
-  //     setIsLoggingOut(true);
-  //     try {
-  //         await logout(); // Use the logout function from context
-  //         alert('Logout Successful.');
-  //       navigate('/login'); // Redirect to login after successful logout
-  //     } catch (error) {
-  //       console.error('Error during logout:', error);
-  //       alert('Logout failed. Please try again.'); // Show an error message if logout fails
-  //     } finally {
-  //       setIsLoggingOut(false);
-  //     }
-  //   };
+  const toggleRewardsDropdown = () => {
+    setRewardsDropdownOpen(!isRewardsDropdownOpen);
+    setStakeDropdownOpen(false);
+    setIncomeDropdownOpen(false);
+  };
 
   useEffect(() => {
-    async function getUserRank() {
-      try {
-        // Send a GET request to the backend to get the user's rank
-        const response = await fetch(
-          "https://tmc-phi.vercel.app/api/investments/determineRank",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${userToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          console.log("User Rank:", data.rank); // Log the rank to the console for debugging
-          setRank(data.rank); // Update state with the rank
-        } else {
-          const errorData = await response.json();
-          setError(errorData.error); // Set error state if the request fails
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        setError("Failed to fetch user rank");
-      } finally {
-        setLoading(false); // Stop loading once the request is completed
+    const fetchUserData = async () => {
+      if (address && contract) {
+        const user2 = await contract.users2(address);
+        console.log("User data:", user2);
+        setUserData2(user2);
       }
-    }
+    };
 
-    getUserRank();
-  }, [userToken]); // Only run this effect when the userToken changes
+    fetchUserData();
+  }, [address, contract]);
 
-  const handleClick = () => {
-    // Trigger wallet modal open first, then logout
-    open(); // Open the Web3Modal
-    handleLogout(); // Log the user out
-  };
+  useEffect(() => {
+    const a = () => {
+      if (walletProvider) {
+        const provider = new ethers.providers.Web3Provider(walletProvider);
+        // setProvider(provider);
+        const signer = provider.getSigner();
+        // setSigner(signer);
+        const newContract = new ethers.Contract(
+          contractAddress,
+          contractAbi,
+          signer
+        );
+        setContract(newContract);
+      }
+    };
+    a();
+  }, [walletProvider]);
 
   return (
-    <div className="min-h-screen w-64 bg-gradient-to-r from-blue-200 to-blue-400 shadow-2xl dark:from-blue-900 dark:to-blue-400">
+    <div className="min-h-screen w-64 bg-blue-100 shadow-2xl dark:from-blue-900 dark:to-blue-400">
       {/* <SimpleBar style={{ maxHeight: "100vh" }}> */}
 
       <div
@@ -221,8 +150,11 @@ const Sidebar = ({
                 </div>
               )}
             </div> */}
-
-          <h1 className="ml-3 text-yellow-500 text-2xl font-bold">{rank}</h1>
+          <div className="side">
+            <h1 className="ml-3 text-gray-600 text-2xl font-bold">
+              <strong>{rankLabels[userData2?.rk ?? 0]}</strong>
+            </h1>
+          </div>
         </div>
         <button
           className="lg:hidden text-gray-500"
@@ -240,7 +172,7 @@ const Sidebar = ({
             onClick={() => navigate("/user")}
           >
             <div className="flex items-center space-x-3">
-              <Home className="h-5 w-5 text-gray-500 dark:text-slate-300" />
+              <Home className="h-5 w-5 text-gray-500 dark:text-slate-300 " />
               <span className="text-gray-500 dark:text-slate-300 hover:text-gray-200">
                 Dashboards
               </span>
@@ -248,7 +180,7 @@ const Sidebar = ({
           </div>
 
           {/* Team Dropdown */}
-          {/* <div>
+          <div>
             <div
               className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
               onClick={() => {
@@ -284,10 +216,10 @@ const Sidebar = ({
                 ))}
               </ul>
             </div>
-          </div> */}
+          </div>
 
           {/* Stake Dropdown */}
-          {/* <div>
+          <div>
             <div
               className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
               onClick={() => {
@@ -295,7 +227,7 @@ const Sidebar = ({
                 navigate("/stake"); // Navigate to team.js
               }}
             >
-              <ChartBarIcon className="h-5 w-5 text-gray-500 dark:text-slate-300" />
+              <Lock className="h-5 w-5 text-gray-500 dark:text-slate-300" />
               <span className="ml-3 text-gray-500 dark:text-slate-300 hover:text-gray-200 flex-grow">
                 Stake
               </span>
@@ -323,10 +255,10 @@ const Sidebar = ({
                 ))}
               </ul>
             </div>
-          </div> */}
+          </div>
 
           {/* Income Dropdown */}
-          {/* <div>
+          <div>
             <div
               className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
               onClick={() => {
@@ -334,7 +266,7 @@ const Sidebar = ({
                 navigate("/income"); // Navigate to team.js
               }}
             >
-              <ChartBarIcon className="h-5 w-5 text-gray-500 dark:text-slate-300" />
+              <DollarSign className="h-5 w-5 text-gray-500 dark:text-slate-300" />
               <span className="ml-3 text-gray-500 dark:text-slate-300 hover:text-gray-200 flex-grow">
                 Income
               </span>
@@ -362,20 +294,20 @@ const Sidebar = ({
                 ))}
               </ul>
             </div>
-          </div> */}
+          </div>
 
           {/* Rewards Dropdown */}
-          {/* <div>
+          <div>
             <div
               className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer"
               onClick={() => {
                 toggleRewardsDropdown(); // Call your dropdown toggle function
-                navigate("/rewards"); // Navigate to team.js
+                navigate("/ranks"); // Navigate to Ranks.tsx
               }}
             >
-              <ChartBarIcon className="h-5 w-5 text-gray-500 dark:text-slate-300" />
+              <Gift className="h-5 w-5 text-gray-500 dark:text-slate-300" />
               <span className="ml-3 text-gray-500 dark:text-slate-300 hover:text-gray-200 flex-grow">
-                Rewards
+                Ranks
               </span>
               <ChevronDown
                 className={`h-5 w-5 dark:text-gray-200 text-gray-500 transition-transform duration-300 ease-in-out transform ${
@@ -391,7 +323,7 @@ const Sidebar = ({
               }`}
             >
               <ul className="text-m mt-2 space-y-4 ml-4">
-                {["Weekly Rewards", "Royalty Rewards"].map((item) => (
+                {["Amount Allocated", "Active Users"].map((item) => (
                   <li key={item} className="flex items-center space-x-2">
                     <Circle className="h-3 w-3 text-gray-500 dark:text-gray-200" />
                     <span className="text-gray-700 dark:text-gray-200">
@@ -401,19 +333,24 @@ const Sidebar = ({
                 ))}
               </ul>
             </div>
-          </div> */}
+          </div>
 
-          {/* Log Out Button */}
-          <div
-            className="flex items-center p-3 hover:bg-gray-700 rounded-lg cursor-pointer mt-4"
-            onClick={handleClick}
-          >
-            {error && <p className="text-red-500 mb-4">{error}</p>}{" "}
-            {/* Display error message */}
-            <Circle className="h-3 w-3 text-gray-500 dark:text-gray-200" />
-            <span className="ml-3 text-gray-500 dark:text-slate-300">
-              Log Out
-            </span>
+          {/* Connect Wallet Button */}
+          <div className="flex flex-col items-center justify-center mt-10">
+            <button
+              id="wallet-button"
+              className="button text-black k px-6 py-3   transition duration-200 flex items-center mb-2"
+              onClick={() => {
+                open();
+                navigate("/");
+              }} // Use connectWallet from context
+            >
+              <strong>
+                {address
+                  ? `${address.slice(0, 6)}...${address.slice(-4)}`
+                  : "Connect Wallet"}
+              </strong>
+            </button>
           </div>
         </nav>
       )}

@@ -1,221 +1,204 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../AuthContext";
-import { useWeb3Modal, useWeb3ModalAccount } from "@web3modal/ethers5/react";
+import { ethers } from "ethers";
+// import Header from "./header.tsx";
+// import "./Register.css";
+import { useNavigate, useLocation } from "react-router-dom";
+import { contractAbi } from "./Props/contractAbi.ts";
+import { contractAddress } from "./Props/contractAddress.ts";
+import {
+  useWeb3ModalAccount,
+  useWeb3ModalProvider,
+} from "@web3modal/ethers5/react";
+import { useWeb3Modal } from "@web3modal/ethers5/react";
 
-export default function RegistrationForm() {
-  const { StoreTokenInLS } = useAuth();
+const Register = () => {
+  const { open } = useWeb3Modal();
+  const [contract, setContract] = useState<ethers.Contract | null>(null);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const [hasApproval, setHasApproval] = useState(false);
+  const [referralAddress, setReferralAddress] = useState("");
   const navigate = useNavigate();
+  const { walletProvider } = useWeb3ModalProvider();
+  const { address } = useWeb3ModalAccount();
+  const [signer, setSigner] = useState<null | ethers.Signer>(null);
 
-  // State to manage form fields
-  const [user, setUser] = useState({
-    address: "", // Wallet address will replace email
-    password: "",
-    referralAddress: "", // Referral address instead of email
-  });
+  const usdtAddress = "0xc2132D05D31c914a87C6611C10748AEb04B58e8F"; // USDT token address on BSC Testnet
+  const usdtAbi = [
+    {
+      inputs: [
+        { internalType: "address", name: "owner", type: "address" },
+        { internalType: "address", name: "spender", type: "address" },
+      ],
+      name: "allowance",
+      outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+      stateMutability: "view",
+      type: "function",
+    },
+    {
+      inputs: [
+        { internalType: "address", name: "spender", type: "address" },
+        { internalType: "uint256", name: "amount", type: "uint256" },
+      ],
+      name: "approve",
+      outputs: [{ internalType: "bool", name: "", type: "bool" }],
+      stateMutability: "nonpayable",
+      type: "function",
+    },
+  ];
 
-  const [isPopupVisible, setIsPopupVisible] = useState(false);
+  useEffect(() => {
+    if (walletProvider) {
+      const a = async () => {
+        const provider = new ethers.providers.Web3Provider(walletProvider);
+        const signer = provider.getSigner();
+        setSigner(signer);
+        const newContract = new ethers.Contract(
+          contractAddress,
+          contractAbi,
+          signer
+        );
+        setContract(newContract);
+        checkRegistrationStatus(newContract);
+      };
+      a();
+    }
+  }, [walletProvider]);
 
-  // Web3Modal hooks
-  const { open } = useWeb3Modal(); // Web3Modal instance to open and close modal
-  const { address } = useWeb3ModalAccount(); // Get wallet account (address)
-
-  // Handle input changes for referral address and password
-  const handleInputs = (e: { target: { name: any; value: any } }) => {
-    const { name, value } = e.target;
-    setUser({ ...user, [name]: value });
+  const checkRegistrationStatus = async (contract: ethers.Contract) => {
+    const userExists = await contract.isUserExists(address);
+    setIsRegistered(userExists);
+    if (userExists) {
+      alert("You are already registered!");
+      navigate("/user");
+    }
   };
 
-  // Handle form submission
-  const PostData = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-
-    const { address, password, referralAddress } = user;
-
-    if (!address) {
-      window.alert("Please connect your wallet.");
+  const handleRegistration = async () => {
+    if (!referralAddress) {
+      alert("Please enter a referral address.");
       return;
     }
-
-    // Send the POST request to the backend
-    const res = await fetch("https://tmc-phi.vercel.app/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ address, password, referralAddress }), // Send wallet address and referral address
-    });
-
-    const data = await res.json();
-    console.log("Response from server:", data);
-
-    // Check for errors and show a message
-    if (data.error) {
-      window.alert(data.error);
-    } else {
-      window.alert("Registration Successful");
-      StoreTokenInLS(data.token); // Store the token if available
-      navigate("/login"); // Redirect to login page after registration
+    if (signer === null) {
+      return;
+    }
+    try {
+      if (contract === null) {
+        console.error("Contract is null. Cannot proceed with registration.");
+        return;
+      }
+      const tx = await contract.regUsr(address, referralAddress);
+      await tx.wait();
+      alert("Registration successful!");
+      navigate("/user");
+    } catch (error) {
+      console.error("Registration failed:", error);
     }
   };
 
-  // Handle wallet connection
-  const handleConnectWallet = () => {
-    open(); // This will open the Web3Modal for wallet connection
+  const handleApproveAndRegister = async () => {
+    if (!hasApproval) {
+      if (signer === null) {
+        console.error("Signer is null. Cannot proceed with approval.");
+        return;
+      }
+      try {
+        const usdtContract = new ethers.Contract(usdtAddress, usdtAbi, signer);
+        const amountToApprove = ethers.utils.parseUnits("10", 18);
+        const tx = await usdtContract.approve(contractAddress, amountToApprove);
+        await tx.wait();
+        alert("Approval successful for 10 USDT!");
+        setHasApproval(true);
+      } catch (error) {
+        console.error("Approval failed:", error);
+        return;
+      }
+    }
+
+    await handleRegistration();
   };
 
-  const handleClosePopup = () => {
-    setIsPopupVisible(false);
-  };
+  const location = useLocation();
 
-  // This effect will run on component mount
   useEffect(() => {
-    // Extract the referral address from the URL hash (after #)
-    const urlParams = new URLSearchParams(window.location.hash.split("?")[1]);
-    const referralFromUrl = urlParams.get("referralAddress"); // Get the referral address from URL
-
-    // If a referral address is present in the URL, update the state
-    if (referralFromUrl) {
-      setUser((prevUser) => ({
-        ...prevUser,
-        referralAddress: referralFromUrl, // Set the referral address
-      }));
+    const queryParams = new URLSearchParams(location.search);
+    const referral = queryParams.get("referral");
+    if (referral) {
+      setReferralAddress(referral);
     }
-
-    // If Web3Modal has provided an address, set it as the user's wallet address
-    if (address) {
-      setUser((prevUser) => ({
-        ...prevUser,
-        address: address, // Set the wallet address
-      }));
-    }
-  }, [address]); // Dependency array to ensure it runs when the component mounts or address changes
+  }, [location]);
 
   return (
-    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-gray-800 rounded-lg shadow-xl p-8">
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4 flex-1 overflow-auto">
+      <div className="floating-container  z-10 w-full max-w-md bg-gray-800 rounded-lg shadow-xl p-8">
         <div className="flex items-center justify-center mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-white">TMC</h1>
-            <p className="text-teal-400 text-sm tracking-wider">
+            <h1 className="text-3xl font-bold text-teal-400 tracking-wider">
+              TMC
+            </h1>
+            {/* <p className="text-teal-400 text-sm tracking-wider">
               Trade Market Cap
-            </p>
+            </p> */}
           </div>
         </div>
 
         <h2 className="text-3xl font-bold text-white mb-2">
-          Create Your Account Now
+          Connect Your Wallet
         </h2>
-        <p className="text-gray-400 mb-8">With Your Desired Wallet</p>
+        <p className="text-gray-400 mb-8">
+          Please connect your wallet to proceed.
+        </p>
 
-        <form onSubmit={PostData}>
-          {/* Display wallet address instead of email */}
-          <div className="mb-6">
-            <label
-              htmlFor="address"
-              className="block text-sm font-medium text-gray-400 mb-2"
-            >
-              Wallet Address<span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              name="address"
-              id="address"
-              className="w-full bg-gray-700 text-white rounded px-4 py-3 outline-none focus:ring-2 focus:ring-teal-500"
-              value={user.address || address || ""} // Use address from Web3ModalAccount if available
-              readOnly
-              required
-              placeholder="Connected Wallet Address"
-            />
-          </div>
-
-          <div className="mb-6">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-400 mb-2"
-            >
-              Password<span className="text-red-500">*</span>
-            </label>
-            <input
-              type="password"
-              name="password"
-              id="password"
-              value={user.password}
-              onChange={handleInputs}
-              required
-              className="w-full bg-gray-700 text-white rounded px-4 py-3 outline-none focus:ring-2 focus:ring-teal-500"
-              placeholder="Enter your password"
-            />
-          </div>
-
-          <div className="mb-6">
-            <label
-              htmlFor="referralAddress"
-              className="block text-sm font-medium text-gray-400 mb-2"
-            >
-              Referral Wallet Address (Optional)
-            </label>
-            <input
-              type="text"
-              name="referralAddress"
-              id="referralAddress"
-              className="w-full bg-gray-700 text-white rounded px-4 py-3 outline-none focus:ring-2 focus:ring-teal-500"
-              value={user.referralAddress}
-              onChange={handleInputs}
-              placeholder="Enter referral wallet address (optional)"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded mb-4 transition duration-300"
-          >
-            REGISTER
-          </button>
-        </form>
-
-        <button
-          className="w-full bg-gray-700 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded mb-4 transition duration-300"
-          onClick={() => navigate("/login")}
-        >
-          ALREADY REGISTERED? SIGN IN
-        </button>
-
-        {/* Wallet connection pop-up */}
+        {/* Wallet connection */}
         {!address && (
           <button
-            onClick={handleConnectWallet}
             className="w-full bg-teal-600 text-white font-bold py-3 px-4 rounded mb-4 transition duration-300"
+            onClick={() => open()}
           >
             CONNECT WALLET
           </button>
         )}
 
-        {isPopupVisible && (
-          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-            <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-              <h2 className="text-lg font-bold text-white mb-2">
-                Connect Your Wallet
-              </h2>
-              <p className="text-gray-400 mb-4">
-                Please connect your wallet to proceed.
-              </p>
-              <button
-                onClick={handleConnectWallet}
-                className="bg-teal-600 text-white px-4 py-2 rounded hover:bg-teal-500 transition duration-300"
-              >
-                Connect Wallet
-              </button>
-              <button
-                onClick={handleClosePopup}
-                className="mt-2 bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-600 transition duration-300"
-              >
-                Cancel
-              </button>
-            </div>
+        {address && (
+          <div>
+            <p className="hidden md:block overflow-hidden text-slate-200 mt-4">
+              Connected address: {address}
+            </p>
+            <p className="overflow-hidden text-slate-200 mt-4 md:hidden">
+              Connected address:{" "}
+              {`${address.slice(0, 6)}...${address.slice(-4)}`}
+            </p>
+
+            {isRegistered ? (
+              <p className="text-green-300 mt-4">You are already registered!</p>
+            ) : (
+              <div>
+                <p className="text-red-400 mt-4">You are not registered yet!</p>
+                <div className="mt-8">
+                  <input
+                    type="text"
+                    placeholder="Enter referral address"
+                    value={referralAddress}
+                    onChange={(e) => setReferralAddress(e.target.value)}
+                    className="border rounded p-2 w-full text-white bg-gray-700 border-teal-500"
+                  />
+                  <div className="flex justify-center">
+                    <button
+                      className={`bg-${
+                        hasApproval ? "transparent" : "transparent"
+                      } hover:bg-teal-600 text-white border border-teal-500 hover:border-black hover:text-black font-bold py-2 px-4 rounded mt-4`}
+                      onClick={handleApproveAndRegister}
+                    >
+                      {hasApproval ? "Register" : "Approve and Register"}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
     </div>
   );
-}
+};
+
+export default Register;

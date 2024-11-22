@@ -13,7 +13,7 @@ export default function LoginScreen() {
   const { dispatch } = useContext(UserContext);
   const { address } = useWeb3ModalAccount(); // Get the connected wallet address
   const { open } = useWeb3Modal(); // Web3Modal instance to open and close modal
-  // const { address } = useWeb3ModalAccount();
+
   const handleConnectWallet = () => {
     open(); // This will open the Web3Modal for wallet connection
   };
@@ -43,8 +43,15 @@ export default function LoginScreen() {
       const data = await res.json();
 
       if (!res.ok) {
-        // Check if the response status is not OK (e.g., 400, 401)
-        throw new Error(data.error || "Invalid Credentials"); // The server's error message is in `data.error`
+        // If the account is not registered or credentials are invalid
+        if (data.error === "Account not found") {
+          // Redirect to registration if the account doesn't exist
+          window.alert("Account not found, redirecting to registration.");
+          navigate("/register");
+          setIsLoading(false);
+          return;
+        }
+        throw new Error(data.error || "Invalid Credentials");
       }
 
       // Successful login
