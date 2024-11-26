@@ -47,7 +47,7 @@ header.blur {
   align-items: center;
   gap: 6px;
   letter-spacing: -1px;
-  color: #1e3d4d;
+  color: #05309c;
   font-size: 1.4em;
 }
 
@@ -55,7 +55,7 @@ header ul {
   list-style: none;
   display: flex;
   gap: 30px;
-  color: #1e3d4d;
+color: #1e3d4d;
   font-weight: 400;
   font-size: 1em;
   text-transform: uppercase;
@@ -80,7 +80,7 @@ button {
   border-radius: 50px;
   font-size: 1em;
   font-weight: 600;
-  color: #1e3d4d;
+  color: #05309c;
   font-family: 'Barlow Condensed', sans-serif;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -122,7 +122,7 @@ strong {
   line-height: 0.9em;
   padding: 0;
   margin-bottom: 20px;
-  color: #1e3d4d;
+  color: #05309c;
 }
 
 .wrapper p,
@@ -131,7 +131,7 @@ strong {
   font-family: 'Roboto Flex', sans-serif;
   font-weight: 400;
   line-height: 1.6em;
-  color: #054868;
+ color: #1e3d4d;
 }
 
 .section-3 {
@@ -146,6 +146,7 @@ strong {
   line-height: 1.6em;
   padding: 20px;
   font-family: 'Roboto Flex', sans-serif;
+color: #1e3d4d;
 }
 
 .section-2 {
@@ -171,14 +172,16 @@ strong {
   line-height: 0.9em;
   padding: 0;
   margin-bottom: 20px;
-  color: #1e3d4d;
+  color: #05309c;
 }
 
 .section-2 .wrapper ul {
+  font-size: 1.2em;
   font-weight: 300;
   line-height: 1.6em;
   padding: 20px 20px;
   font-family: 'Roboto Flex', sans-serif;
+ color: #1e3d4d;
 }
 
 .section-3 .wrapper h2 {
@@ -189,7 +192,7 @@ strong {
   line-height: 0.9em;
   padding: 0;
   margin-bottom: 20px;
-  color: #1e3d4d;
+  color: #05309c;
 }
 
 .section-3 {
@@ -212,7 +215,7 @@ strong {
   line-height: 0.9em;
   padding: 0;
   margin-bottom: 20px;
-  color: #1e3d4d;
+  color: #05309c;
 }
 
 .card-wrapper {
@@ -235,11 +238,12 @@ strong {
   letter-spacing: -0.06em;
   line-height: 1em;
   margin: 0.2em 0;
-  color: #1e3d4d;
+  color: #05309c;
 }
 
 .card p {
-  color: #054868;
+   font-size: 1em;
+ color: #1e3d4d;
 }
 
 footer {
@@ -340,7 +344,7 @@ footer {
   }
 
   .section-2 .wrapper ul {
-    font-size: 0.9em;
+    font-size: 1em;
   }
 
   .section-3 .wrapper ul {
@@ -376,7 +380,7 @@ footer {
     line-height: 0.9em;
     padding: 0;
     margin-bottom: 20px;
-    color: #1e3d4d;
+    color: #05309c;
   }
 
   .section-4 .wrapper ul {
