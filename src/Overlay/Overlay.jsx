@@ -641,7 +641,7 @@ export default function Overlay() {
       <footer>
         <div className="footer-left">
           <h3>USDX</h3>
-          <p>Stability Perfected, Freedom Unleashed</p>
+          {/* <p>Stability Perfected, Freedom Unleashed</p> */}
           <div className="social">
             <img src="instagram.svg" width={30} />
             <img src="youtube.svg" width={30} />
